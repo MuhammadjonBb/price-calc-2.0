@@ -174,7 +174,9 @@ import { onMounted, ref, watch, computed } from "vue";
 import productRow from "./productRow.vue";
 import productSearch from "./productSearch.vue";
 import { formatPrice } from "../utils/format.js";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const products = ref([
   // {
   //   name: 'OSB 9mm',
@@ -302,7 +304,6 @@ const isDesktopLarge = computed(() => {
 });
 
 const logout = () => {
-  localStorage.removeItem("auth");
-  location.reload();
+  router.push("/price-calc/login");
 };
 </script>

@@ -13,31 +13,40 @@
 
       <!-- Input -->
       <div class="space-y-4">
-        <div class="flex justify-between items-center gap-2">
+        <div class="flex flex-col justify-between items-center gap-2">
           <input
-            v-model="password"
-            :type="showPassword ? 'text' : 'password'"
-            placeholder="Введите пароль"
+            v-model="login"
+            type="text"
+            placeholder="Введите логин"
             @keyup.enter="handleLogin"
             class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm sm:text-base focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition"
           />
-          <button
-            @click="showPassword = !showPassword"
-            class="text-sm text-gray-500 cursor-pointer hover:text-gray-700 focus:outline-none"
-          >
-            <div class="w-10 h-10 flex items-center justify-center">
-              <img
-                v-show="showPassword"
-                src="../assets/img/eye-hidepassword.svg"
-                alt="Показать"
-              />
-              <img
-                v-show="!showPassword"
-                src="../assets/img/eye-showpassword.svg"
-                alt="Скрыть"
-              />
-            </div>
-          </button>
+          <div class="flex justify-between items-center gap-2 w-full">
+            <input
+              v-model="password"
+              :type="showPassword ? 'text' : 'password'"
+              placeholder="Введите пароль"
+              @keyup.enter="handleLogin"
+              class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm sm:text-base focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition"
+            />
+            <button
+              @click="showPassword = !showPassword"
+              class="text-sm text-gray-500 cursor-pointer hover:text-gray-700 focus:outline-none"
+            >
+              <div class="w-10 h-10 flex items-center justify-center">
+                <img
+                  v-show="showPassword"
+                  src="../assets/img/eye-hidepassword.svg"
+                  alt="Показать"
+                />
+                <img
+                  v-show="!showPassword"
+                  src="../assets/img/eye-showpassword.svg"
+                  alt="Скрыть"
+                />
+              </div>
+            </button>
+          </div>
         </div>
 
         <!-- Button -->
@@ -62,37 +71,17 @@
 
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
 const password = ref("");
+const login = ref("");
 const error = ref("");
-const emit = defineEmits(["success"]);
 const showPassword = ref(false);
-
-const SAVED_HASH = import.meta.env.VITE_APP_PASSWORD_HASH; // Храните хэш пароля в переменных окружения для безопасности
-
-// Функция для хэширования пароля с помощью SHA-256
-async function hash(text) {
-  const encoder = new TextEncoder(); // Кодируем строку в Uint8Array
-  const data = encoder.encode(text); // Хэшируем данные
-  const hashBuffer = await crypto.subtle.digest("SHA-256", data); // Получаем ArrayBuffer с результатом хэша
-  const hashArray = Array.from(new Uint8Array(hashBuffer)); // Преобразуем ArrayBuffer в массив байтов
-  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join(""); // Преобразуем байты в строку в шестнадцатеричном формате
-}
-
-const sessionDuration = 30 * 60 * 1000; // 30 минут
-const expiresAt = Date.now() + sessionDuration;
+const router = useRouter();
 
 // Функция для обработки входа
-const handleLogin = async (e) => {
+const handleLogin = (e) => {
   e.preventDefault();
-  const hashedInput = await hash(password.value); // Хэшируем введенный пароль
-
-  if (hashedInput === SAVED_HASH) {
-    localStorage.setItem("auth", "true");
-    localStorage.setItem("expiresAt", expiresAt.toString());
-    emit("success");
-  } else {
-    error.value = "Неверный пароль";
-  }
+  router.push("/price-calc/");
 };
 </script>

@@ -27,4 +27,19 @@ const router = createRouter({
   routes,
 });
 
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem("token");
+
+  // если не залогинен — только /login доступен
+  if (!token && to.path !== "/price-calc/login") {
+    return next("/price-calc/login");
+  }
+
+  // если залогинен — не пускаем на login
+  if (token && to.path === "/login") {
+    return next("/price-calc/");
+  }
+
+  next();
+});
 export default router;

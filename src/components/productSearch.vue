@@ -32,8 +32,13 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
-import data from "../data/products.json";
+import { ref, computed, onMounted } from "vue";
+const data = ref([]);
+
+onMounted(async () => {
+  const res = await fetch("http://localhost:3000/products");
+  data.value = await res.json();
+});
 
 const props = defineProps({
   addedProducts: Array,
@@ -43,7 +48,8 @@ const search = ref("");
 // Фильтруем продукты на основе введенного текста и исключаем уже добавленные
 const filteredProducts = computed(() => {
   if (!search.value) return [];
-  return data.filter((product) => {
+
+  return data.value.filter((product) => {
     const isAdded = props.addedProducts.some((p) => p.id === product.id); // Проверяем, добавлен ли продукт в список
     return (
       !isAdded &&

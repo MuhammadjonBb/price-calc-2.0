@@ -305,5 +305,6 @@ const isDesktopLarge = computed(() => {
 
 const logout = () => {
   router.push("/price-calc/login");
+  localStorage.removeItem("token");
 };
 </script>

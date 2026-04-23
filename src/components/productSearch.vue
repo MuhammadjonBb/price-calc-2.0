@@ -36,7 +36,11 @@ import { ref, computed, onMounted } from "vue";
 const data = ref([]);
 
 onMounted(async () => {
-  const res = await fetch("http://localhost:3000/products");
+  const res = await fetch("http://localhost:3000/products", {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
   data.value = await res.json();
 });
 

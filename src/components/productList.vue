@@ -6,6 +6,7 @@
       <div
         class="flex justify-between flex-col sm:flex-row md:flex-row gap-4 mb-6"
       >
+        <router-link to="/price-calc/orders/"><h2>Заказы</h2></router-link>
         <h2 class="md:text-2xl text-xl font-bold">
           Расчет маржи и дорожных расходов
         </h2>

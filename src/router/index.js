@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import Login from "../components/Login.vue";
 import Orders from "../components/Orders.vue";
-import Main from "../components/productList.vue";
+import Main from "../components/ProductList.vue";
 
 const routes = [
   {

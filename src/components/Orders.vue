@@ -3,8 +3,9 @@
     <div
       class="max-w-full mx-auto bg-surface border border-border shadow-2xl rounded-2xl lg:p-6 md:p-4 p-3 mb-10"
     >
-      <div class="p-4">
+      <div class="p-4 flex justify-between items-center">
         <h1 class="text-2xl font-bold mb-4">Сохраненные заказы</h1>
+        <router-link to="/price-calc/">Назад</router-link>
       </div>
 
       <ul class="flex flex-col gap-2">

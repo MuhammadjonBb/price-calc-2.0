@@ -42,7 +42,7 @@
               /></span>
             </button>
             <button
-              @click="removeOrder(order._id)"
+              @click="deleteOrder(order._id)"
               class="bg-red-500 text-white px-4 py-1.5 md:px-3 md:py-2 rounded-md cursor-pointer hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
             >
               <span v-if="isDesktopLarge">Удалить</span>
@@ -97,7 +97,7 @@ const getOrders = async () => {
   }
 };
 
-const removeOrder = async (orderId) => {
+const deleteOrder = async (orderId) => {
   try {
     const response = await fetch(`http://localhost:3000/orders/${orderId}`, {
       method: "DELETE",

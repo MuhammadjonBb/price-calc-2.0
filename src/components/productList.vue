@@ -50,18 +50,32 @@
             @update:removeProduct="removeProduct"
           />
 
-          <div key="search" class="flex flex-col gap-2 mt-2">
-            <h3 class="font-semibold text-lg">
-              <img
-                src="../assets/img/search.svg"
-                alt="Поиск"
-                class="inline w-8 mr-0.5"
+          <div class="grid grid-cols-2" key="actions">
+            <div key="search" class="flex flex-col gap-2 mt-2">
+              <h3 class="font-semibold text-lg">
+                <img
+                  src="../assets/img/search.svg"
+                  alt="Поиск"
+                  class="inline w-8 mr-0.5"
+                />
+                Поиск
+              </h3>
+              <productSearch
+                @add-product="addProduct"
+                :added-products="products"
               />
-              Поиск
-            </h3>
-            <productSearch
-              @add-product="addProduct"
-              :added-products="products"
+            </div>
+            <button
+              @click="openModal"
+              class="ml-auto self-end bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition-colors w-max cursor-pointer"
+            >
+              Сохранить заказ
+            </button>
+
+            <OrderModal
+              v-if="isModalOpen"
+              @close="isModalOpen = false"
+              @save="handleSave"
             />
           </div>
         </transition-group>
@@ -93,6 +107,20 @@
             Поиск
           </h3>
           <productSearch @add-product="addProduct" :added-products="products" />
+          <div>
+            <button
+              @click="openModal"
+              class="bg-blue-600 text-white px-4 py-2 rounded-xl"
+            >
+              Сохранить заказ
+            </button>
+
+            <OrderModal
+              v-if="isModalOpen"
+              @close="isModalOpen = false"
+              @save="handleSave"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -174,6 +202,7 @@
 import { onMounted, ref, watch, computed } from "vue";
 import productRow from "./productRow.vue";
 import productSearch from "./productSearch.vue";
+import OrderModal from "./orderModal.vue";
 import { formatPrice } from "../utils/format.js";
 import { useRouter } from "vue-router";
 
@@ -304,8 +333,46 @@ const isDesktopLarge = computed(() => {
   return window.innerWidth >= 1440; // Условие для определения десктопной версии (можно настроить по своему усмотрению)
 });
 
+// TODO: improve
 const logout = () => {
   router.push("/price-calc/login");
   localStorage.removeItem("token");
+};
+
+// Модальное окно для сохранения заказа
+const isModalOpen = ref(false);
+const orderMeta = ref({
+  name: "",
+  agent: "",
+  comment: "",
+  statusCode: "",
+});
+
+const openModal = () => {
+  isModalOpen.value = true;
+};
+
+const handleSave = async (data) => {
+  try {
+    // тут ты склеиваешь мету + товары из калькулятора
+    const order = {
+      ...data, // данные из формы (имя, агент, комментарий, статус)
+      products: products.value, // твои товары
+    };
+
+    const res = await fetch("http://localhost:3000/orders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify(order),
+    });
+
+    isModalOpen.value = false;
+    console.log(res);
+  } catch (e) {
+    console.error(e);
+  }
 };
 </script>

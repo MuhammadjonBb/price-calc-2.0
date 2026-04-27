@@ -7,7 +7,16 @@
         <h1 class="text-2xl font-bold mb-4">Сохраненные заказы</h1>
         <router-link to="/price-calc/">Назад</router-link>
       </div>
-
+      <div
+        class="grid grid-cols-6 gap-4 lg:text-md text-sm items-center py-3 px-4 text-text-main"
+      >
+        <div class="font-bold">Дата создания</div>
+        <div class="font-bold">Название</div>
+        <div class="font-bold">Контрагент</div>
+        <div class="font-bold">Итого</div>
+        <div class="font-bold">Комментарий</div>
+        <div class="font-bold">Статус</div>
+      </div>
       <ul class="flex flex-col gap-2">
         <li
           v-for="order in orders"
@@ -21,7 +30,7 @@
           <div>{{ order.agent }}</div>
           <div>{{ formatPrice(totalProducts(order)) }} сум</div>
           <div>{{ order.comment }}</div>
-          <div>{{ order.statusCode }}</div>
+          <div>{{ getStatusText(order.statusCode) }}</div>
         </li>
       </ul>
     </div>
@@ -57,6 +66,19 @@ const getOrders = async () => {
     orders.value = await response.json();
   } catch (error) {
     console.error("Error fetching orders:", error);
+  }
+};
+
+const getStatusText = (statusCode) => {
+  switch (statusCode) {
+    case "0":
+      return "Новый";
+    case "1":
+      return "В процессе";
+    case "2":
+      return "Завершен";
+    default:
+      return "Неизвестный статус";
   }
 };
 </script>

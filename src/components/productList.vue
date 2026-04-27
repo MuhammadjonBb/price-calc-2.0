@@ -341,12 +341,6 @@ const logout = () => {
 
 // Модальное окно для сохранения заказа
 const isModalOpen = ref(false);
-const orderMeta = ref({
-  name: "",
-  agent: "",
-  comment: "",
-  statusCode: "",
-});
 
 const openModal = () => {
   isModalOpen.value = true;
@@ -360,7 +354,7 @@ const handleSave = async (data) => {
       products: products.value, // твои товары
     };
 
-    const res = await fetch("http://localhost:3000/orders", {
+    await fetch("http://localhost:3000/orders", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -370,7 +364,6 @@ const handleSave = async (data) => {
     });
 
     isModalOpen.value = false;
-    console.log(res);
   } catch (e) {
     console.error(e);
   }

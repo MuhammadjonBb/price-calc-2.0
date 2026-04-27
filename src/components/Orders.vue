@@ -13,7 +13,7 @@
         <div class="font-bold">Дата создания</div>
         <div class="font-bold">Название</div>
         <div class="font-bold">Контрагент</div>
-        <div class="font-bold">Итого</div>
+        <div class="font-bold">Итоговая сумма</div>
         <div class="font-bold">Комментарий</div>
         <div class="font-bold">Статус</div>
       </div>
@@ -31,7 +31,16 @@
           <div>{{ formatPrice(totalSum(order)) }} сум</div>
           <div>{{ order.comment }}</div>
           <div>{{ getStatusText(order.statusCode) }}</div>
-          <div>
+          <div class="flex justify-between items-center gap-2">
+            <button
+              @click="openOrder(order._id)"
+              class="bg-primary text-white px-4 py-1.5 md:px-3 md:py-2 rounded-md cursor-pointer hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              <span v-if="isDesktopLarge">Открыть</span>
+              <span v-else
+                ><img src="../assets/img/delete.svg" alt="Открыть" class="w-5"
+              /></span>
+            </button>
             <button
               @click="removeOrder(order._id)"
               class="bg-red-500 text-white px-4 py-1.5 md:px-3 md:py-2 rounded-md cursor-pointer hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
@@ -51,7 +60,9 @@
 <script setup>
 import { onMounted, ref, computed } from "vue";
 import { formatPrice } from "../utils/format.js";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const orders = ref(null);
 
 onMounted(() => {
@@ -59,10 +70,8 @@ onMounted(() => {
 });
 
 const totalSum = (order) => {
-  console.log(order);
-
   return order.products.reduce((total, product) => {
-    return total + product.finalPrice * product.amount;
+    return total + product.deliveryPrice * product.amount;
   }, 0);
 };
 
@@ -76,6 +85,10 @@ const getOrders = async () => {
       },
     });
     if (!response.ok) {
+      if (response.status === 401) {
+        // Если неавторизован, перенаправляем на страницу входа
+        router.push("/login");
+      }
       throw new Error("Failed to fetch orders");
     }
     orders.value = await response.json();
@@ -93,7 +106,12 @@ const removeOrder = async (orderId) => {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });
+
     if (!response.ok) {
+      if (response.status === 401) {
+        // Если неавторизован, перенаправляем на страницу входа
+        router.push("/login");
+      }
       throw new Error("Failed to delete order");
     }
     // После удаления заказа, обновляем список заказов
@@ -114,6 +132,17 @@ const getStatusText = (statusCode) => {
     default:
       return "Неизвестный статус";
   }
+};
+
+const openOrder = (orderId) => {
+  // Логика для открытия заказа, например, переход на страницу с деталями заказа
+  localStorage.setItem(
+    "products",
+    JSON.stringify(
+      orders.value.find((order) => order._id === orderId).products,
+    ),
+  );
+  router.push(`/price-calc/`);
 };
 
 const isDesktopLarge = computed(() => {

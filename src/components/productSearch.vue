@@ -36,12 +36,23 @@ import { ref, computed, onMounted } from "vue";
 const data = ref([]);
 
 onMounted(async () => {
-  const res = await fetch("http://localhost:3000/products", {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  });
-  data.value = await res.json();
+  try {
+    const res = await fetch("http://localhost:3000/products", {
+      headers: {
+        method: "GET",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    if (res.status === 401) {
+      // Если неавторизован, перенаправляем на страницу входа
+      router.push("/login");
+    }
+    data.value = await res.json();
+  } catch (error) {
+    console.error("Error fetching products:", error);
+  }
 });
 
 const props = defineProps({

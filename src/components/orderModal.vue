@@ -8,7 +8,7 @@
         <h2 class="text-lg font-semibold">Сохранить заказ</h2>
         <button
           @click="$emit('close')"
-          class="text-gray-400 hover:text-gray-600"
+          class="text-gray-400 hover:text-gray-600 cursor-pointer"
         >
           ✕
         </button>
@@ -50,7 +50,7 @@
       <!-- Actions -->
       <div class="flex justify-between mt-6">
         <button
-          class="text-gray-500 hover:text-gray-700"
+          class="text-gray-500 hover:text-gray-700 cursor-pointer"
           @click="$emit('close')"
         >
           Отмена

@@ -8,7 +8,7 @@
         <router-link to="/price-calc/">Назад</router-link>
       </div>
       <div
-        class="grid grid-cols-6 gap-4 lg:text-md text-sm items-center py-3 px-4 text-text-main"
+        class="grid grid-cols-7 gap-4 lg:text-md text-sm items-center py-3 px-4 text-text-main"
       >
         <div class="font-bold">Дата создания</div>
         <div class="font-bold">Название</div>
@@ -21,16 +21,27 @@
         <li
           v-for="order in orders"
           :key="order._id"
-          class="grid grid-cols-6 gap-4 lg:text-md text-sm items-center py-3 px-4 text-text-main rounded-lg shadow-md border border-border bg-surface"
+          class="grid grid-cols-7 gap-4 lg:text-md text-sm items-center py-3 px-4 text-text-main rounded-lg shadow-md border border-border bg-surface"
         >
           <div class="">
             {{ new Date(order.createdAt).toLocaleString() }}
           </div>
           <h2 class="">{{ order.name }}</h2>
           <div>{{ order.agent }}</div>
-          <div>{{ formatPrice(totalProducts(order)) }} сум</div>
+          <div>{{ formatPrice(totalSum(order)) }} сум</div>
           <div>{{ order.comment }}</div>
           <div>{{ getStatusText(order.statusCode) }}</div>
+          <div>
+            <button
+              @click="removeOrder(order._id)"
+              class="bg-red-500 text-white px-4 py-1.5 md:px-3 md:py-2 rounded-md cursor-pointer hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
+            >
+              <span v-if="isDesktopLarge">Удалить</span>
+              <span v-else
+                ><img src="../assets/img/delete.svg" alt="Удалить" class="w-5"
+              /></span>
+            </button>
+          </div>
         </li>
       </ul>
     </div>
@@ -38,7 +49,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, computed } from "vue";
 import { formatPrice } from "../utils/format.js";
 
 const orders = ref(null);
@@ -47,8 +58,12 @@ onMounted(() => {
   getOrders();
 });
 
-const totalProducts = (order) => {
-  return order.products.reduce((total, product) => total + product.amount, 0);
+const totalSum = (order) => {
+  console.log(order);
+
+  return order.products.reduce((total, product) => {
+    return total + product.finalPrice * product.amount;
+  }, 0);
 };
 
 const getOrders = async () => {
@@ -69,6 +84,25 @@ const getOrders = async () => {
   }
 };
 
+const removeOrder = async (orderId) => {
+  try {
+    const response = await fetch(`http://localhost:3000/orders/${orderId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Failed to delete order");
+    }
+    // После удаления заказа, обновляем список заказов
+    getOrders();
+  } catch (error) {
+    console.error("Error deleting order:", error);
+  }
+};
+
 const getStatusText = (statusCode) => {
   switch (statusCode) {
     case "0":
@@ -81,4 +115,8 @@ const getStatusText = (statusCode) => {
       return "Неизвестный статус";
   }
 };
+
+const isDesktopLarge = computed(() => {
+  return window.innerWidth >= 1440; // Условие для определения десктопной версии (можно настроить по своему усмотрению)
+});
 </script>

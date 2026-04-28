@@ -50,7 +50,9 @@
       />
       <span class="block content-center">сум</span>
     </div>
-    <div class="">{{ formatPrice(product.deliveryPrice) }} сум</div>
+    <div class="text-blue-500 font-semibold">
+      {{ formatPrice(product.deliveryPrice) }} сум
+    </div>
     <div class="">{{ formatPrice(product.finalPrice) }} сум</div>
     <div class="flex justify-end">
       <button

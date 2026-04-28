@@ -84,6 +84,7 @@ const getOrders = async () => {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });
+
     if (!response.ok) {
       if (response.status === 401) {
         // Если неавторизован, перенаправляем на страницу входа
@@ -136,10 +137,15 @@ const getStatusText = (statusCode) => {
 
 const openOrder = (orderId) => {
   // Логика для открытия заказа, например, переход на страницу с деталями заказа
+
   localStorage.setItem(
     "products",
     JSON.stringify(
       orders.value.find((order) => order._id === orderId).products,
+    ),
+    localStorage.setItem(
+      "roadExpense",
+      orders.value.find((order) => order._id === orderId).roadExpense,
     ),
   );
   router.push(`/price-calc/`);

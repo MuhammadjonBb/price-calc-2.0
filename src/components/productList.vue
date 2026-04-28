@@ -6,7 +6,13 @@
       <div
         class="flex justify-between flex-col sm:flex-row md:flex-row gap-4 mb-6"
       >
-        <router-link to="/price-calc/orders/"><h2>Заказы</h2></router-link>
+        <router-link
+          to="/price-calc/orders/"
+          class="p-2 px-4 text-blue-500 self-center outline rounded-lg hover:bg-blue-600 hover:text-white transition-colors"
+          ><h2 class="font-lg font-bold font-gray-800">
+            Сохраненные заказы
+          </h2></router-link
+        >
         <h2 class="md:text-2xl text-xl font-bold">
           Расчет маржи и дорожных расходов
         </h2>
@@ -23,7 +29,7 @@
         <transition-group name="fade" tag="div" class="grid gap-3 relative">
           <div
             key="header"
-            class="grid grid-cols-[24%_10%_6%_8%_8%_14%_13%_13%_4%] xl:font-semibold font-medium px-4 md:text-sm"
+            class="grid grid-cols-[24%_10%_6%_8%_8%_14%_13%_13%_4%] bg-blue-50 pt-4 pb-2 rounded-t-xl xl:font-semibold font-medium px-4 md:text-sm"
           >
             <div class="pr-1">Наименование</div>
             <div class="pr-1">СС Без НДС</div>
@@ -50,8 +56,8 @@
             @update:removeProduct="removeProduct"
           />
 
-          <div class="grid grid-cols-2" key="actions">
-            <div key="search" class="flex flex-col gap-2 mt-2">
+          <div class="grid grid-cols-2 gap-4" key="actions">
+            <div key="search" class="flex flex-col gap-2">
               <h3 class="font-semibold text-lg">
                 <img
                   src="../assets/img/search.svg"
@@ -65,18 +71,35 @@
                 :added-products="products"
               />
             </div>
-            <button
-              @click="openModal"
-              class="ml-auto self-end bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition-colors w-max cursor-pointer"
-            >
-              Сохранить заказ
-            </button>
+            <div class="flex gap-2 justify-end">
+              <button
+                class="flex items-center self-end cursor-pointer outline -outline-offset-1 text-red-600 md:px-4 py-2.5 px-3 rounded-lg hover:bg-red-600 hover:text-white transition-colors"
+                @click="
+                  products = [];
+                  roadExpense = '';
+                  setFinalPrice();
+                "
+              >
+                <!-- <img
+                  src="../assets/img/clear.svg"
+                  alt="Очистить"
+                  class="w-5 md:w-7 inline mr-0.5"
+                /> -->
+                Очистить все
+              </button>
+              <button
+                @click="openModal"
+                class="self-end cursor-pointer bg-blue-500 text-white md:px-4 py-2.5 px-3 rounded-lg hover:bg-blue-600 transition-colors"
+              >
+                Сохранить заказ
+              </button>
 
-            <OrderModal
-              v-if="isModalOpen"
-              @close="isModalOpen = false"
-              @save="handleSave"
-            />
+              <OrderModal
+                v-if="isModalOpen"
+                @close="isModalOpen = false"
+                @save="handleSave"
+              />
+            </div>
           </div>
         </transition-group>
       </div>
@@ -143,25 +166,10 @@
             placeholder="Дорожный расход"
             name="roadExpense"
             type="text"
-            class="w-full px-4 xl:max-w-3/4 py-2 bg-primary-light border border-border rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none"
+            class="w-full px-4 py-2 bg-primary-light border border-border rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none"
             @input="setFinalPrice"
             v-model="formattedValue"
           />
-          <button
-            class="flex self-end items-center cursor-pointer bg-red-500 text-white md:px-4 py-2 px-3 rounded-lg hover:bg-red-600 transition-colors"
-            @click="
-              products = [];
-              roadExpense = '';
-              setFinalPrice();
-            "
-          >
-            <img
-              src="../assets/img/clear.svg"
-              alt="Очистить"
-              class="w-5 md:w-7 inline mr-0.5"
-            />
-            Очистить все
-          </button>
         </div>
       </div>
       <div
@@ -175,23 +183,29 @@
         <div>
           Общая стоимость
           <span v-show="parseFloat(roadExpense) > 0">с доставкой</span>:
-          <strong>{{ formatPrice(totalCost) }} сум</strong>
+          <strong>{{ formatPrice(totalCost) }}</strong> сум
         </div>
         <div v-if="parseFloat(roadExpense) > 0">
           Общая стоимость без доставки:
-          <strong>{{ formatPrice(totalCost - roadExpense) }} сум</strong>
+          <strong>{{ formatPrice(totalCost - roadExpense) }} </strong> сум
         </div>
         <div>
           Средняя маржа:
-          <strong>{{ formatPrice(avgMargin) }}%</strong>
+          <strong>{{ formatPrice(avgMargin) }} %</strong>
         </div>
         <div>
-          Общая прибыль:
-          <strong>{{ formatPrice(totalProfit) }} сум</strong>
+          Прибыль:
+          <strong class="text-green-500">
+            {{ formatPrice(totalProfit) }}
+          </strong>
+          сум
         </div>
         <div>
           Дорожный расход:
-          <strong>{{ formatPrice(roadExpense) }} сум</strong>
+          <strong class="text-orange-500">{{
+            formatPrice(roadExpense)
+          }}</strong>
+          сум
         </div>
       </div>
     </div>
@@ -352,6 +366,7 @@ const handleSave = async (data) => {
     const order = {
       ...data, // данные из формы (имя, агент, комментарий, статус)
       products: products.value, // твои товары
+      roadExpense: roadExpense.value, // дорожные расходы
     };
 
     await fetch("http://localhost:3000/orders", {

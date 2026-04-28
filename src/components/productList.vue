@@ -211,11 +211,11 @@ const products = ref([
   // {
   //   name: 'OSB 9mm',
   //   minPrice: 100,
-  //   marginPrice: 0,
-  //   finalPrice: 0,
+  //   marginPrice: 120,
+  //   finalPrice: 130,
   //   unit: 'м2',
   //   amount: 1,
-  //   deliveryPrice: 0
+  //   deliveryPrice: 10
   // },
 ]);
 const roadExpense = ref("");

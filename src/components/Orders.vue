@@ -87,7 +87,7 @@ const getOrders = async () => {
     if (!response.ok) {
       if (response.status === 401) {
         // Если неавторизован, перенаправляем на страницу входа
-        router.push("/login");
+        router.push("/price-calc/login");
       }
       throw new Error("Failed to fetch orders");
     }
@@ -110,7 +110,7 @@ const deleteOrder = async (orderId) => {
     if (!response.ok) {
       if (response.status === 401) {
         // Если неавторизован, перенаправляем на страницу входа
-        router.push("/login");
+        router.push("/price-calc/login");
       }
       throw new Error("Failed to delete order");
     }

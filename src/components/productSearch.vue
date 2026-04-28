@@ -47,7 +47,7 @@ onMounted(async () => {
 
     if (res.status === 401) {
       // Если неавторизован, перенаправляем на страницу входа
-      router.push("/login");
+      router.push("/price-calc/login");
     }
     data.value = await res.json();
   } catch (error) {

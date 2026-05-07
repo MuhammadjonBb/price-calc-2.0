@@ -98,6 +98,7 @@
                 v-if="isModalOpen"
                 @close="isModalOpen = false"
                 @save="handleSave"
+                @generate-kp="onGenerateKP"
               />
             </div>
           </div>
@@ -142,6 +143,7 @@
               v-if="isModalOpen"
               @close="isModalOpen = false"
               @save="handleSave"
+              @generate-kp="onGenerateKP"
             />
           </div>
         </div>
@@ -219,6 +221,8 @@ import productSearch from "./productSearch.vue";
 import OrderModal from "./orderModal.vue";
 import { formatPrice } from "../utils/format.js";
 import { useRouter } from "vue-router";
+import { toast } from "vue-sonner";
+import { generateKP } from "../utils/generateKP.js";
 
 const router = useRouter();
 const products = ref([
@@ -378,9 +382,15 @@ const handleSave = async (data) => {
       body: JSON.stringify(order),
     });
 
+    toast.success("Заказ сохранен");
     isModalOpen.value = false;
   } catch (e) {
+    toast.error("Ошибка при сохранении заказа");
     console.error(e);
   }
+};
+
+const onGenerateKP = () => {
+  generateKP(products.value);
 };
 </script>

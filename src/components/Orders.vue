@@ -61,6 +61,7 @@
 import { onMounted, ref, computed } from "vue";
 import { formatPrice } from "../utils/format.js";
 import { useRouter } from "vue-router";
+import { toast } from "vue-sonner";
 
 const router = useRouter();
 const orders = ref(null);
@@ -115,9 +116,14 @@ const deleteOrder = async (orderId) => {
       }
       throw new Error("Failed to delete order");
     }
+    const getOrderName = orders.value.find(
+      (order) => order._id === orderId,
+    ).name;
     // После удаления заказа, обновляем список заказов
+    toast.success(`Заказ \`${getOrderName}\` успешно удален`);
     getOrders();
   } catch (error) {
+    toast.error("Ошибка при удалении заказа");
     console.error("Error deleting order:", error);
   }
 };

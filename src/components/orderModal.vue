@@ -58,7 +58,9 @@
 
         <div class="flex gap-2">
           <button
+            type="button"
             class="px-4 py-2 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-50 cursor-pointer"
+            @click="createKP"
           >
             Создать КП
           </button>
@@ -79,7 +81,7 @@
 <script setup>
 import { ref, computed } from "vue";
 
-const emit = defineEmits(["close", "save"]);
+const emit = defineEmits(["close", "save", "generate-kp"]);
 
 const form = ref({
   name: "",
@@ -95,5 +97,9 @@ const isValid = computed(() => {
 const handleSave = () => {
   if (!isValid.value) return;
   emit("save", form.value);
+};
+
+const createKP = () => {
+  emit("generate-kp");
 };
 </script>

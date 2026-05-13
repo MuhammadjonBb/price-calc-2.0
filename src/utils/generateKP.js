@@ -5,13 +5,11 @@ export async function generateKP(products) {
   const workbook = new ExcelJS.Workbook();
 
   await workbook.xlsx.load(
-    await fetch("price-calc/src/public/templates/kp-template.xlsx").then(
-      (res) => res.arrayBuffer(),
+    await fetch("/price-calc/kp-template.xlsx").then((res) =>
+      res.arrayBuffer(),
     ),
   );
-
-  const sheet = workbook.getWorksheet(1);
-  console.log(sheet);
+  const sheet = workbook.getWorksheet("КП-2 (со СКИДКОЙ) RUS"); // use the real name from console
 
   let row = 26; // Начинаем с 26-й строки, так как первые 25 строк - это шаблон
 
@@ -20,13 +18,12 @@ export async function generateKP(products) {
     sheet.getCell(`B${row}`).value = product.name;
     sheet.getCell(`C${row}`).value = product.unit;
     sheet.getCell(`D${row}`).value = product.amount;
-    sheet.getCell(`E${row}`).value = product.price;
+    sheet.getCell(`E${row}`).value = product.deliveryPrice;
 
     row++;
   });
 
   const buffer = await workbook.xlsx.writeBuffer();
-  console.log("ready kp");
 
   saveAs(new Blob([buffer]), `КП.xlsx`);
 }

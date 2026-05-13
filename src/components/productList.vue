@@ -392,5 +392,6 @@ const handleSave = async (data) => {
 
 const onGenerateKP = () => {
   generateKP(products.value);
+  toast.success("КП успешно сгенерировано");
 };
 </script>

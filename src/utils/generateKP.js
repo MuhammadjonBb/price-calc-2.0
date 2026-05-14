@@ -46,6 +46,22 @@ export async function generateKP(products) {
     sheet.getRow(r).height = Math.max(BASE_HEIGHT, lines * LINE_HEIGHT);
   });
 
+  const dateCell = sheet.getCell("B8");
+  dateCell.value = `от ${new Date().toLocaleDateString("ru-RU")} г.`;
+
+  const userData = localStorage.getItem("userData")
+    ? JSON.parse(localStorage.getItem("userData"))
+    : null;
+  const roleCell = sheet.getCell(`B${40 - 1 + products.length}`);
+  roleCell.value = userData ? userData.role : "Менеджер";
+
+  const nameCell = sheet.getCell(`B${42 - 1 + products.length}`);
+  nameCell.value = userData ? userData.name : "";
+
+  const phoneCell = sheet.getCell(`B${43 - 1 + products.length}`);
+  phoneCell.value = userData ? userData.phone : "";
+  console.log(products.length);
+
   const buffer = await workbook.xlsx.writeBuffer();
   saveAs(new Blob([buffer]), `КП.xlsx`);
 }

@@ -103,6 +103,7 @@ const handleLogin = async (e) => {
   }
 
   localStorage.setItem("token", data.token);
+  localStorage.setItem("userData", JSON.stringify(data.user));
   router.push("/price-calc/");
 };
 </script>

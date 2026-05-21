@@ -60,7 +60,6 @@ export async function generateKP(products) {
 
   const phoneCell = sheet.getCell(`B${43 - 1 + products.length}`);
   phoneCell.value = userData ? userData.phone : "";
-  console.log(products.length);
 
   const buffer = await workbook.xlsx.writeBuffer();
   saveAs(new Blob([buffer]), `КП.xlsx`);

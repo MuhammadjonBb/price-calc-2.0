@@ -8,8 +8,9 @@
       >
         <router-link
           to="/price-calc/orders/"
-          class="p-2 px-4 text-blue-500 self-center outline rounded-lg hover:bg-blue-600 hover:text-white transition-colors"
-          ><h2 class="font-lg font-bold font-gray-800">
+          class="flex items-center p-2 px-4 text-blue-500 self-center outline rounded-lg hover:bg-blue-600 hover:text-white transition-colors"
+        >
+          <h2 class="font-lg font-bold font-gray-800">
             Сохраненные заказы
           </h2></router-link
         >

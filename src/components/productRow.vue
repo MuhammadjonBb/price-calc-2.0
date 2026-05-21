@@ -155,7 +155,9 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["update:finalPrice"], ["update:removeProduct"]);
-const minPrice = computed(() => props.product.minPrice.toFixed(2));
+const minPrice = computed(() => {
+  return Number(props.product.minPrice).toFixed(2);
+});
 
 const setMargin = (event) => {
   const value = event.target.value;

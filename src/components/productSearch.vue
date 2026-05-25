@@ -40,7 +40,7 @@ const router = useRouter();
 
 onMounted(async () => {
   try {
-    const res = await fetch("http://localhost:3000/products", {
+    const res = await fetch("http://192.168.100.33:3000/products", {
       headers: {
         method: "GET",
         "Content-Type": "application/json",

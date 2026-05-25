@@ -1,13 +1,18 @@
 <template>
   <div class="xl:p-6 md:p-3 p-1 text-text-main bg-surface min-h-screen">
     <div
-      class="max-w-full mx-auto bg-surface border border-border shadow-2xl rounded-2xl lg:p-6 md:p-4 p-3 mb-10"
+      class="max-w-full mx-auto bg-surface border border-border shadow-2xl rounded-2xl lg:p-6 md:p-4 p-3 mb-10 tex-sm"
     >
-      <div class="p-4 flex justify-between items-center">
-        <h1 class="text-2xl font-bold mb-4">Сохраненные заказы</h1>
-        <router-link to="/price-calc/">Назад</router-link>
+      <div class="p-4 flex justify-between gap-2 items-center">
+        <h1 class="text-2xl font-bold">Сохраненные заказы</h1>
+        <router-link
+          class="flex self-center underline text-blue-500 hover:text-blue-700"
+          to="/price-calc/"
+          >Назад</router-link
+        >
       </div>
       <div
+        v-if="isDesktop"
         class="grid grid-cols-7 gap-4 lg:text-md text-sm items-center py-3 px-4 text-text-main"
       >
         <div class="font-bold">Дата создания</div>
@@ -17,7 +22,7 @@
         <div class="font-bold">Комментарий</div>
         <div class="font-bold">Статус</div>
       </div>
-      <ul class="flex flex-col gap-2">
+      <ul class="flex flex-col gap-2" v-if="isDesktop">
         <li
           v-for="order in orders"
           :key="order._id"
@@ -53,6 +58,39 @@
           </div>
         </li>
       </ul>
+      <!-- MOBILE -->
+      <div v-else class="flex flex-col gap-4">
+        <div
+          v-for="order in orders"
+          :key="order._id"
+          class="flex flex-col gap-2 p-4 border border-border rounded-lg shadow-md bg-surface"
+        >
+          <div class="flex justify-between items-center">
+            <h2 class="text-lg font-bold">{{ order.name }}</h2>
+            <div>{{ new Date(order.createdAt).toLocaleString() }}</div>
+          </div>
+          <div><b>Контрагент:</b> {{ order.agent }}</div>
+          <div>
+            <b>Итоговая сумма:</b> {{ formatPrice(totalSum(order)) }} сум
+          </div>
+          <div><b>Комментарий:</b> {{ order.comment }}</div>
+          <div><b>Статус:</b> {{ getStatusText(order.statusCode) }}</div>
+          <div class="flex justify-end items-center gap-2">
+            <button
+              @click="openOrder(order._id)"
+              class="bg-primary text-white px-4 py-1.5 md:px-3 md:py-2 rounded-md cursor-pointer hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              Открыть
+            </button>
+            <button
+              @click="deleteOrder(order._id)"
+              class="bg-red-500 text-white px-4 py-1.5 md:px-3 md:py-2 rounded-md cursor-pointer hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
+            >
+              Удалить
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -78,7 +116,7 @@ const totalSum = (order) => {
 
 const getOrders = async () => {
   try {
-    const response = await fetch("http://localhost:3000/orders", {
+    const response = await fetch("http://192.168.100.33:3000/orders", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -101,7 +139,7 @@ const getOrders = async () => {
 
 const deleteOrder = async (orderId) => {
   try {
-    const response = await fetch(`http://localhost:3000/orders/${orderId}`, {
+    const response = await fetch(`http://192.168.100.33:3000/orders/${orderId}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -156,6 +194,10 @@ const openOrder = (orderId) => {
   );
   router.push(`/price-calc/`);
 };
+
+const isDesktop = computed(() => {
+  return window.innerWidth >= 1024; // Условие для определения десктопной версии (можно настроить по своему усмотрению)
+});
 
 const isDesktopLarge = computed(() => {
   return window.innerWidth >= 1440; // Условие для определения десктопной версии (можно настроить по своему усмотрению)

@@ -83,7 +83,7 @@ const router = useRouter();
 const handleLogin = async (e) => {
   e.preventDefault();
 
-  const res = await fetch("http://localhost:3000/login", {
+  const res = await fetch("http://192.168.100.33:3000/login", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,

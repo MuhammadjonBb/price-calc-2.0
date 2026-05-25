@@ -1,5 +1,8 @@
 <template>
-  <div class="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
+  <div
+    class="fixed inset-0 bg-black/30 flex items-center justify-center z-50"
+    @click.self="$emit('close')"
+  >
     <div
       class="bg-white w-full max-w-md rounded-2xl shadow-lg border border-gray-200 p-6"
     >
@@ -48,14 +51,7 @@
       </div>
 
       <!-- Actions -->
-      <div class="flex justify-between mt-6">
-        <button
-          class="text-gray-500 hover:text-gray-700 cursor-pointer"
-          @click="$emit('close')"
-        >
-          Отмена
-        </button>
-
+      <div class="flex justify-end mt-6">
         <div class="flex gap-2">
           <button
             type="button"

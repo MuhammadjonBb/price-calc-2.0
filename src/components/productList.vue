@@ -3,7 +3,7 @@
     <div
       class="lg:p-6 md:p-4 pt-5 p-3 mb-10 max-w-full mx-auto bg-surface border border-border shadow-2xl rounded-2xl"
     >
-      <div class="flex justify-between flex-col sm:flex-row gap-2 mb-6">
+      <div class="flex justify-between flex-col sm:flex-row gap-2 mb-4 lg:mb-6">
         <div class="flex items-center justify-between gap-2">
           <router-link
             to="/price-calc/orders/"

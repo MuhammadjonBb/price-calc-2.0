@@ -11,6 +11,13 @@ export async function generateKP(products) {
   );
 
   const sheet = workbook.getWorksheet("КП-2 (со СКИДКОЙ) RUS");
+  const checkBuffer = await fetch("/price-calc/assets/checkmark.png").then(
+    (r) => r.arrayBuffer(),
+  );
+  const imageId = workbook.addImage({
+    buffer: checkBuffer,
+    extension: "png",
+  });
 
   const BASE_HEIGHT = 15;
   const CHARS_PER_LINE = 30;
@@ -20,6 +27,7 @@ export async function generateKP(products) {
     const r = 26 + index;
 
     const cells = [
+      // Заполняем ячейки для каждой строки
       { col: `A${r}`, value: index + 1 },
       { col: `B${r}`, value: product.name },
       { col: `C${r}`, value: product.unit },
@@ -46,12 +54,18 @@ export async function generateKP(products) {
     sheet.getRow(r).height = Math.max(BASE_HEIGHT, lines * LINE_HEIGHT);
   });
 
+  sheet.addImage(imageId, {
+    tl: { col: 0.99, row: 14.7 },
+    ext: { width: 18, height: 18 },
+    editAs: "absolute", // фиксируем позицию, чтобы не смещалось при изменении строк/столбцов
+  });
+
   const dateCell = sheet.getCell("B8");
   dateCell.value = `от ${new Date().toLocaleDateString("ru-RU")} г.`;
 
   const userData = localStorage.getItem("userData")
     ? JSON.parse(localStorage.getItem("userData"))
-    : null;
+    : null; // Получаем данные пользователя из localStorage
   const roleCell = sheet.getCell(`B${40 - 1 + products.length}`);
   roleCell.value = userData ? userData.role : "Менеджер";
 

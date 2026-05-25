@@ -33,7 +33,10 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
+import { useRouter } from "vue-router";
+
 const data = ref([]);
+const router = useRouter();
 
 onMounted(async () => {
   try {
@@ -52,6 +55,9 @@ onMounted(async () => {
     data.value = await res.json();
   } catch (error) {
     console.error("Error fetching products:", error);
+    if (error.response && error.response.status === 401) {
+      router.push("/price-calc/login");
+    }
   }
 });
 

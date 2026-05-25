@@ -1,27 +1,51 @@
 <template>
   <div class="xl:p-6 md:p-3 p-1 text-text-main bg-surface min-h-screen">
     <div
-      class="max-w-full mx-auto bg-surface border border-border shadow-2xl rounded-2xl lg:p-6 md:p-4 p-3 mb-10"
+      class="lg:p-6 md:p-4 pt-5 p-3 mb-10 max-w-full mx-auto bg-surface border border-border shadow-2xl rounded-2xl"
     >
-      <div
-        class="flex justify-between flex-col sm:flex-row md:flex-row gap-4 mb-6"
-      >
-        <router-link
-          to="/price-calc/orders/"
-          class="flex items-center p-2 px-4 text-blue-500 self-center outline rounded-lg hover:bg-blue-600 hover:text-white transition-colors"
-        >
-          <h2 class="font-lg font-bold font-gray-800">
-            Сохраненные заказы
-          </h2></router-link
-        >
+      <div class="flex justify-between flex-col sm:flex-row gap-2 mb-6">
+        <div class="flex items-center justify-between gap-2">
+          <router-link
+            to="/price-calc/orders/"
+            class="group flex items-center p-1.5 px-4 text-blue-500 lg:self-center self-start outline rounded-lg hover:bg-blue-600 hover:text-white transition-colors"
+          >
+            <h2 class="flex items-center font-lg font-bold font-gray-800">
+              <img
+                src="../assets/img/save.svg"
+                alt="Заказы"
+                class="inline w-3 mr-1 group-hover:brightness-0 group-hover:invert"
+              />
+              Заказы
+            </h2></router-link
+          >
+          <button
+            v-show="!isTablet"
+            @click="logout"
+            class="bg-red-500 flex self-end items-center text-white px-4 py-1.5 lg:py-2 rounded-lg hover:bg-red-600 transition cursor-pointer"
+          >
+            <img
+              src="../assets/img/exit.svg"
+              alt="Выйти"
+              class="lg:w-5 w-4 mr-1"
+            />
+            Выйти
+          </button>
+        </div>
+
         <h2 class="md:text-2xl text-xl font-bold">
-          Расчет маржи и дорожных расходов
+          <div v-if="isDesktop">Расчет маржи и дорожных расходов</div>
+          <div v-else>Расчет маржи</div>
         </h2>
         <button
+          v-show="isTablet"
           @click="logout"
-          class="bg-red-500 flex self-end items-center text-white px-4 py-2 rounded-lg hover:bg-red-600 transition cursor-pointer"
+          class="bg-red-500 flex self-end items-center text-white px-4 py-1.5 lg:py-2 rounded-lg hover:bg-red-600 transition cursor-pointer"
         >
-          <img src="../assets/img/exit.svg" alt="Выйти" class="w-5 mr-1" />
+          <img
+            src="../assets/img/exit.svg"
+            alt="Выйти"
+            class="lg:w-5 w-4 mr-1"
+          />
           Выйти
         </button>
       </div>
@@ -342,6 +366,10 @@ const totalProfit = computed(() => {
       (product.marginPrice / 1.12 - product.minPrice) * product.amount; // Прибыль с учетом количества
     return sum + profitPerUnit;
   }, 0);
+});
+
+const isTablet = computed(() => {
+  return window.innerWidth >= 640; // Условие для определения планшетной версии (можно настроить по своему усмотрению)
 });
 
 const isDesktop = computed(() => {

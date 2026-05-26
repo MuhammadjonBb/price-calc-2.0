@@ -1,6 +1,6 @@
 <template>
   <div
-    class="grid lg:grid-cols-[24%_10%_6%_8%_8%_14%_13%_13%_4%] grid-cols-[24%_10%_4%_8%_8%_14%_13%_13%_6%] lg:text-md text-sm items-center py-3 px-4 text-text-main rounded-lg shadow-md border border-border bg-surface"
+    class="grid lg:grid-cols-[24%_10%_6%_8%_8%_14%_13%_13%_4%] grid-cols-[24%_10%_4%_8%_8%_14%_13%_13%_6%] lg:text-md text-sm items-center py-3 px-4 text-text-main rounded-lg shadow-md border border-border bg-surface z-1"
     v-if="isDesktop"
   >
     <div class="max-w-9/10">

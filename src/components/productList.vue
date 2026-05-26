@@ -1,5 +1,7 @@
 <template>
-  <div class="xl:p-6 md:p-3 p-1 text-text-main bg-surface min-h-screen">
+  <div
+    class="xl:p-6 md:p-3 p-1 text-text-main bg-surface min-h-screen bg-cover bg-center"
+  >
     <div
       class="lg:p-6 md:p-4 pt-5 p-3 mb-10 max-w-full mx-auto bg-surface border border-border shadow-2xl rounded-2xl"
     >
@@ -49,24 +51,23 @@
           Выйти
         </button>
       </div>
-
+      <div
+        v-if="isDesktop"
+        key="header"
+        class="relative z-1 grid grid-cols-[24%_10%_6%_8%_8%_14%_13%_13%_4%] pt-4 pb-2 px-4 md:text-sm xl:font-semibold font-medium before:content-[''] before:absolute before:inset-x-0 before:-top-2 before:-bottom-3 before:bg-violet-50 before:rounded-t-2xl before:-z-1"
+      >
+        <div class="pr-1">Наименование</div>
+        <div class="pr-1">СС Без НДС</div>
+        <div class="pr-1">Ед. изм.</div>
+        <div class="pr-1" v-if="isDesktopLarge">Количество</div>
+        <div class="pr-1" v-else>Кол-во</div>
+        <div class="pr-1">Маржа (%)</div>
+        <div class="pr-1 max-w-9/10">Цена без доставки (Маржа + НДС)</div>
+        <div class="pr-1 max-w-9/10">Цена с учетом доставки</div>
+        <div class="pr-1">Сумма</div>
+      </div>
       <div class="grid gap-4 mb-4" v-if="isDesktop">
         <transition-group name="fade" tag="div" class="grid gap-3 relative">
-          <div
-            key="header"
-            class="grid grid-cols-[24%_10%_6%_8%_8%_14%_13%_13%_4%] bg-blue-50 pt-4 pb-2 rounded-t-xl xl:font-semibold font-medium px-4 md:text-sm"
-          >
-            <div class="pr-1">Наименование</div>
-            <div class="pr-1">СС Без НДС</div>
-            <div class="pr-1">Ед. изм.</div>
-            <div class="pr-1" v-if="isDesktopLarge">Количество</div>
-            <div class="pr-1" v-else>Кол-во</div>
-            <div class="pr-1">Маржа (%)</div>
-            <div class="pr-1 max-w-9/10">Цена без доставки (Маржа + НДС)</div>
-            <div class="pr-1 max-w-9/10">Цена с учетом доставки</div>
-            <div class="pr-1">Сумма</div>
-          </div>
-
           <!-- <div
           v-if="!products.length"
           class="text-gray-900 text-center p-4 mt-2 border-dashed border-2 border-gray-600  rounded-lg"
@@ -178,7 +179,7 @@
       class="grid grid-cols-1 2xl:grid-cols-2 gap-4 md:mt-6 mt-3 max-w-full mx-auto text-xs md:text-sm xl:text-xl"
     >
       <div
-        class="flex flex-col gap-2 shadow-xl rounded-2xl md:p-6 p-3 border border-border"
+        class="flex flex-col gap-2 shadow-xl rounded-2xl md:p-6 p-3 border border-border bg-surface"
       >
         <h3 class="font-semibold lg:text-lg text-sm">
           <img
@@ -200,7 +201,7 @@
         </div>
       </div>
       <div
-        class="flex flex-col gap-2 shadow-xl rounded-2xl md:p-6 p-3 border border-border"
+        class="flex flex-col gap-2 shadow-xl rounded-2xl md:p-6 p-3 border border-border bg-surface"
       >
         <h3 class="font-semibold lg:text-lg">Итого:</h3>
         <div>
@@ -248,6 +249,7 @@ import { formatPrice } from "../utils/format.js";
 import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 import { generateKP } from "../utils/generateKP.js";
+import sakuraBg from "../assets/img/sakura-bg.png";
 
 const router = useRouter();
 const products = ref([

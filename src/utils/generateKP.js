@@ -22,10 +22,6 @@ export async function generateKP(products, props) {
   const checkBuffer = await fetch("/price-calc/assets/checkmark.png").then(
     (r) => r.arrayBuffer(),
   );
-  const imageId = workbook.addImage({
-    buffer: checkBuffer,
-    extension: "png",
-  });
 
   const BASE_HEIGHT = 15;
   const CHARS_PER_LINE = 30;
@@ -62,12 +58,38 @@ export async function generateKP(products, props) {
     sheet.getRow(r).height = Math.max(BASE_HEIGHT, lines * LINE_HEIGHT);
   });
 
-  // sheet.addImage(imageId, {
-  //   // позиционируем изображение в нужную ячейку
-  //   tl: { col: 0.99, row: 14.7 },
-  //   ext: { width: 18, height: 18 },
-  //   editAs: "absolute", // фиксируем позицию, чтобы не смещалось при изменении строк/столбцов
-  // });
+  function setCheck(tCol, tRow) {
+    const imageId = workbook.addImage({
+      buffer: checkBuffer,
+      extension: "png",
+    });
+
+    sheet.addImage(imageId, {
+      tl: { col: tCol, row: tRow },
+      ext: { width: 18, height: 18 },
+      editAs: "absolute",
+    });
+  }
+
+  const checks = {
+    Фундамент: [0.99, 14.7],
+    Фасад: [0.99, 15.7],
+    СК: [0.95, 16.7],
+    ЛКМ: [0.92, 17.7],
+    Звукоизоляция: [0.88, 18.7],
+    "Линейный водоотвод": [0.97, 19.7],
+    Мансарда: [0.93, 20.7],
+    Терраса: [0.91, 21.7],
+    ПК: [0.99, 22.7],
+    Полы: [0.96, 23.7],
+    "Опалубочная система": [0.94, 24.7],
+  };
+
+  Object.entries(checks).forEach(([name, [c, r]]) => {
+    if (props.constructions.includes(name)) {
+      setCheck(c, r);
+    }
+  });
 
   // Заполняем дату и данные пользователя
   const dateCell = sheet.getCell("B8");

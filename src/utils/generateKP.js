@@ -1,7 +1,7 @@
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 
-export async function generateKP(products) {
+export async function generateKP(products, props) {
   const workbook = new ExcelJS.Workbook();
 
   await workbook.xlsx.load(
@@ -10,7 +10,15 @@ export async function generateKP(products) {
     ).then((res) => res.arrayBuffer()),
   );
 
-  const sheet = workbook.getWorksheet("КП-2 (со СКИДКОЙ) RUS");
+  const setTemplate = () => {
+    if (props.template === "nds") {
+      return "КП-1 (с НДС) RUS";
+    } else {
+      return "КП-2 (со СКИДКОЙ) RUS";
+    }
+  };
+
+  const sheet = workbook.getWorksheet(setTemplate());
   const checkBuffer = await fetch("/price-calc/assets/checkmark.png").then(
     (r) => r.arrayBuffer(),
   );
@@ -54,12 +62,14 @@ export async function generateKP(products) {
     sheet.getRow(r).height = Math.max(BASE_HEIGHT, lines * LINE_HEIGHT);
   });
 
-  sheet.addImage(imageId, {
-    tl: { col: 0.99, row: 14.7 },
-    ext: { width: 18, height: 18 },
-    editAs: "absolute", // фиксируем позицию, чтобы не смещалось при изменении строк/столбцов
-  });
+  // sheet.addImage(imageId, {
+  //   // позиционируем изображение в нужную ячейку
+  //   tl: { col: 0.99, row: 14.7 },
+  //   ext: { width: 18, height: 18 },
+  //   editAs: "absolute", // фиксируем позицию, чтобы не смещалось при изменении строк/столбцов
+  // });
 
+  // Заполняем дату и данные пользователя
   const dateCell = sheet.getCell("B8");
   dateCell.value = `от ${new Date().toLocaleDateString("ru-RU")} г.`;
 

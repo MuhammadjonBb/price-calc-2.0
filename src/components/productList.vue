@@ -11,11 +11,11 @@
             to="/price-calc/orders/"
             class="group flex items-center p-1.5 px-4 text-blue-500 lg:self-center self-start outline rounded-lg hover:bg-blue-600 hover:text-white transition-colors"
           >
-            <h2 class="flex items-center font-lg font-bold font-gray-800">
+            <h2 class="flex items-center font-lg font-bold font-gray-800 gap-2">
               <img
                 src="../assets/img/save.svg"
                 alt="Заказы"
-                class="inline w-3 mr-1 group-hover:brightness-0 group-hover:invert"
+                class="inline w-3 group-hover:brightness-0 group-hover:invert"
               />
               Заказы
             </h2></router-link
@@ -114,15 +114,25 @@
                 Очистить все
               </button>
               <button
+                @click="isKPModalOpen = true"
+                class="self-end cursor-pointer text-blue-500 outline -outline-offset-1 outline-blue-500 md:px-4 py-2.5 px-3 rounded-lg hover:bg-blue-500 hover:text-white transition-colors"
+              >
+                Создать КП
+              </button>
+              <button
                 @click="openModal"
                 class="self-end cursor-pointer bg-blue-500 text-white md:px-4 py-2.5 px-3 rounded-lg hover:bg-blue-600 transition-colors"
               >
                 Сохранить заказ
               </button>
-
+              <kpModal
+                v-if="isKPModalOpen"
+                @close="isKPModalOpen = false"
+                @generate-kp="onGenerateKP"
+              />
               <OrderModal
-                v-if="isModalOpen"
-                @close="isModalOpen = false"
+                v-if="isSaveModalOpen"
+                @close="isSaveModalOpen = false"
                 @save="handleSave"
                 @generate-kp="onGenerateKP"
               />
@@ -159,6 +169,12 @@
           <productSearch @add-product="addProduct" :added-products="products" />
           <div>
             <button
+              @click="isKPModalOpen = true"
+              class="self-end cursor-pointer bg-blue-500 text-white md:px-4 py-2.5 px-3 rounded-lg hover:bg-blue-600 transition-colors"
+            >
+              Создать КП
+            </button>
+            <button
               @click="openModal"
               class="bg-blue-600 text-white px-4 py-2 rounded-xl"
             >
@@ -166,12 +182,16 @@
             </button>
 
             <OrderModal
-              v-if="isModalOpen"
-              @close="isModalOpen = false"
+              v-if="isSaveModalOpen"
+              @close="isSaveModalOpen = false"
               @save="handleSave"
-              @generate-kp="onGenerateKP"
             />
           </div>
+          <kpModal
+            v-if="isKPModalOpen"
+            @close="isKPModalOpen = false"
+            @generate-kp="onGenerateKP"
+          />
         </div>
       </div>
     </div>
@@ -245,6 +265,7 @@ import { onMounted, ref, watch, computed } from "vue";
 import productRow from "./productRow.vue";
 import productSearch from "./productSearch.vue";
 import OrderModal from "./orderModal.vue";
+import kpModal from "./kpModal.vue";
 import { formatPrice } from "../utils/format.js";
 import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
@@ -389,10 +410,11 @@ const logout = () => {
 };
 
 // Модальное окно для сохранения заказа
-const isModalOpen = ref(false);
+const isSaveModalOpen = ref(false);
+const isKPModalOpen = ref(false);
 
 const openModal = () => {
-  isModalOpen.value = true;
+  isSaveModalOpen.value = true;
 };
 
 const handleSave = async (data) => {
@@ -414,15 +436,15 @@ const handleSave = async (data) => {
     });
 
     toast.success("Заказ сохранен");
-    isModalOpen.value = false;
+    isSaveModalOpen.value = false;
   } catch (e) {
     toast.error("Ошибка при сохранении заказа");
     console.error(e);
   }
 };
 
-const onGenerateKP = () => {
-  generateKP(products.value);
+const onGenerateKP = (props) => {
+  generateKP(products.value, props);
   toast.success("КП успешно сгенерировано");
 };
 </script>

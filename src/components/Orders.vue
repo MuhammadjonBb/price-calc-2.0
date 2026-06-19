@@ -91,6 +91,9 @@
           </div>
         </div>
       </div>
+      <div v-if="!ifOrders" class="text-center text-gray-500 py-10">
+        Нет сохраненных заказов
+      </div>
     </div>
   </div>
 </template>
@@ -113,6 +116,10 @@ const totalSum = (order) => {
     return total + product.deliveryPrice * product.amount;
   }, 0);
 };
+
+const ifOrders = computed(() => {
+  return orders.value && orders.value.length > 0;
+});
 
 const getOrders = async () => {
   try {
@@ -139,13 +146,16 @@ const getOrders = async () => {
 
 const deleteOrder = async (orderId) => {
   try {
-    const response = await fetch(`http://192.168.100.33:3000/orders/${orderId}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+    const response = await fetch(
+      `http://192.168.100.33:3000/orders/${orderId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       },
-    });
+    );
 
     if (!response.ok) {
       if (response.status === 401) {

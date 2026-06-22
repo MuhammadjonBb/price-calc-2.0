@@ -29,13 +29,13 @@
           class="grid grid-cols-7 gap-4 lg:text-md text-sm items-center py-3 px-4 text-text-main rounded-lg shadow-md border border-border bg-surface"
         >
           <div class="">
-            {{ new Date(order.createdAt).toLocaleString() }}
+            {{ new Date(order.created_at).toLocaleString() }}
           </div>
           <h2 class="">{{ order.name }}</h2>
           <div>{{ order.agent }}</div>
           <div>{{ formatPrice(totalSum(order)) }} сум</div>
           <div>{{ order.comment }}</div>
-          <div>{{ getStatusText(order.statusCode) }}</div>
+          <div>{{ getStatusText(order.status_code) }}</div>
           <div class="flex justify-between items-center gap-2">
             <button
               @click="openOrder(order._id)"
@@ -67,14 +67,14 @@
         >
           <div class="flex justify-between items-center">
             <h2 class="text-lg font-bold">{{ order.name }}</h2>
-            <div>{{ new Date(order.createdAt).toLocaleString() }}</div>
+            <div>{{ new Date(order.created_at).toLocaleString() }}</div>
           </div>
           <div><b>Контрагент:</b> {{ order.agent }}</div>
           <div>
             <b>Итоговая сумма:</b> {{ formatPrice(totalSum(order)) }} сум
           </div>
           <div><b>Комментарий:</b> {{ order.comment }}</div>
-          <div><b>Статус:</b> {{ getStatusText(order.statusCode) }}</div>
+          <div><b>Статус:</b> {{ getStatusText(order.status_code) }}</div>
           <div class="flex justify-end items-center gap-2">
             <button
               @click="openOrder(order._id)"
@@ -179,11 +179,11 @@ const deleteOrder = async (orderId) => {
 
 const getStatusText = (statusCode) => {
   switch (statusCode) {
-    case "0":
+    case 0:
       return "Новый";
-    case "1":
+    case 1:
       return "В процессе";
-    case "2":
+    case 2:
       return "Завершен";
     default:
       return "Неизвестный статус";

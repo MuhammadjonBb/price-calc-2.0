@@ -82,7 +82,11 @@
             @update:removeProduct="removeProduct"
           />
 
-          <div class="grid grid-cols-2 gap-4" key="actions">
+          <div
+            class="grid grid-cols-2 gap-4"
+            :class="products.length === 0 ? 'mt-5' : 'mt-0'"
+            key="actions"
+          >
             <div key="search" class="flex flex-col gap-2">
               <h3 class="font-semibold text-lg">
                 <img

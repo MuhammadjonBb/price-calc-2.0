@@ -40,14 +40,17 @@ export async function generateKP(products, props) {
 
   products.forEach((product, index) => {
     const r = 26 + index;
+    const fixAmount = product.amount.toString().replace(".", ",");
+    const noVAT = product.deliveryPrice / 1.12;
+    const priceType = props.template === "nds" ? product.deliveryPrice : noVAT;
 
     const cells = [
       // Заполняем ячейки для каждой строки
       { col: `A${r}`, value: index + 1 },
       { col: `B${r}`, value: product.name },
       { col: `C${r}`, value: product.unit },
-      { col: `D${r}`, value: product.amount, numFmt: "#,##0" },
-      { col: `E${r}`, value: product.deliveryPrice, numFmt: "#,##0.00" },
+      { col: `D${r}`, value: fixAmount, numFmt: "#,##0" },
+      { col: `E${r}`, value: priceType, numFmt: "#,##0.00" },
       { col: `F${r}`, value: { formula: `D${r}*E${r}` }, numFmt: "#,##0.00" },
       { col: `G${r}`, value: 0.12 },
       { col: `H${r}`, value: { formula: `F${r}*G${r}` }, numFmt: "#,##0.00" },
@@ -183,5 +186,8 @@ export async function generateKP(products, props) {
   );
 
   const buffer = await workbook.xlsx.writeBuffer();
-  saveAs(new Blob([buffer]), `КП.xlsx`);
+  saveAs(
+    new Blob([buffer]),
+    `КП от ${new Date().toLocaleDateString("ru-RU")}.xlsx`,
+  );
 }

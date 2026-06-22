@@ -139,6 +139,7 @@ const getOrders = async () => {
       throw new Error("Failed to fetch orders");
     }
     orders.value = await response.json();
+    console.log("Fetched orders:", orders.value);
   } catch (error) {
     console.error("Error fetching orders:", error);
   }

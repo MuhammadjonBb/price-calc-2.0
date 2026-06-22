@@ -18,6 +18,17 @@ export async function generateKP(products, props) {
     }
   };
 
+  function keepOnlySheet(workbook, sheetNameToKeep) {
+    workbook.worksheets.forEach((ws) => {
+      if (ws.name !== sheetNameToKeep) {
+        workbook.removeWorksheet(ws.id);
+      }
+    });
+  }
+
+  // использование:
+  keepOnlySheet(workbook, setTemplate());
+
   const sheet = workbook.getWorksheet(setTemplate());
   const checkBuffer = await fetch("/price-calc/assets/checkmark.png").then(
     (r) => r.arrayBuffer(),
@@ -43,51 +54,106 @@ export async function generateKP(products, props) {
       { col: `I${r}`, value: { formula: `F${r}+H${r}` }, numFmt: "#,##0.00" },
     ];
 
-    cells.forEach(({ col, value, numFmt }) => {
-      const cell = sheet.getCell(col);
-      cell.value = value;
-      cell.font = { ...cell.font, bold: false }; // сбрасываем жирный
+    const setCellData = (cells) => {
+      cells.forEach(({ col, value, numFmt }) => {
+        const cell = sheet.getCell(col);
+        cell.value = value;
+        cell.font = { ...cell.font, bold: false }; // сбрасываем жирный
 
-      if (numFmt) {
-        cell.numFmt = numFmt; // применяем числовой формат
-      }
-    });
+        if (numFmt) {
+          cell.numFmt = numFmt; // применяем числовой формат
+        }
+      });
+    };
+
+    if (props.template === "nds") {
+      const shortKp = cells.slice(0, -3);
+      setCellData(shortKp);
+    } else {
+      setCellData(cells);
+    }
 
     // Высота строки по длине названия
     const lines = Math.ceil(product.name.length / CHARS_PER_LINE);
     sheet.getRow(r).height = Math.max(BASE_HEIGHT, lines * LINE_HEIGHT);
   });
 
-  function setCheck(tCol, tRow) {
-    const imageId = workbook.addImage({
-      buffer: checkBuffer,
-      extension: "png",
-    });
-
-    sheet.addImage(imageId, {
-      tl: { col: tCol, row: tRow },
-      ext: { width: 18, height: 18 },
-      editAs: "absolute",
-    });
+  function checkBox(cell, label, checked = true) {
+    const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const from = checked ? "☐" : "✅";
+    const to = checked ? "✅" : "☐";
+    const regex = new RegExp(`${from}(?=\\s*${escaped})`);
+    cell.value = cell.value.replace(regex, to);
   }
 
-  const checks = {
-    Фундамент: [0.99, 14.7],
-    Фасад: [0.99, 15.7],
-    СК: [0.95, 16.7],
-    ЛКМ: [0.92, 17.7],
-    Звукоизоляция: [0.88, 18.7],
-    "Линейный водоотвод": [0.97, 19.7],
-    Мансарда: [0.93, 20.7],
-    Терраса: [0.91, 21.7],
-    ПК: [0.99, 22.7],
-    Полы: [0.96, 23.7],
-    "Опалубочная система": [0.94, 24.7],
-  };
+  const checks = [
+    {
+      Фундамент: "A15",
+      Фасад: "A15",
+      СК: "A15",
+      ЛKМ: "A15",
+      Звукоизоляция: "A15",
+      "Линейный водоотвод": "A15",
+      Мансарда: "A15",
+      Терраса: "A15",
+      ПK: "A15",
+      Полы: "A15",
+      "Опалубочная система": "A15",
+    },
+    {
+      Узбекистан: "A20",
+      Германия: "A20",
+      Грузия: "A20",
+      Швейцария: "A20",
+      Казахстан: "A20",
+      Россия: "A20",
+      Бельгия: "A20",
+      Дания: "A20",
+      Финляндия: "A20",
+      Франция: "A20",
+      Китай: "A20",
+      Туркменистан: "A20",
+      Беларусь: "A20",
+      Италия: "A20",
+      Польша: "A20",
+      Турция: "A20",
+    },
+    {
+      "В наличии": "A30",
+      Комплексность: "A30",
+      "Временное хранение": "A30",
+      Скидка: "A30",
+      Доставка: "A30",
+      "Шеф. Монтаж": "A30",
+      Эксклюзивность: "A30",
+      "Ускоренная поставка": "A30",
+      "Доп. скидка": "A30",
+      PMG: "A30",
+    },
+  ];
 
-  Object.entries(checks).forEach(([name, [c, r]]) => {
+  Object.entries(checks[0]).forEach(([name, c]) => {
     if (props.constructions.includes(name)) {
-      setCheck(c, r);
+      const cell = sheet.getCell(c);
+      console.log(cell);
+      checkBox(cell, name, true);
+    }
+  });
+
+  Object.entries(checks[1]).forEach(([name, c]) => {
+    if (props.countries.includes(name)) {
+      const cell = sheet.getCell(c);
+      checkBox(cell, name, true);
+    }
+  });
+
+  Object.entries(checks[2]).forEach(([name, c]) => {
+    if (props.benefits.includes(name)) {
+      const col = c[0];
+      const row = Number(c.slice(1));
+      const cellID = col + (row + products.length - 1);
+      const cell = sheet.getCell(cellID);
+      checkBox(cell, name, true);
     }
   });
 
@@ -106,6 +172,15 @@ export async function generateKP(products, props) {
 
   const phoneCell = sheet.getCell(`B${43 - 1 + products.length}`);
   phoneCell.value = userData ? userData.phone : "";
+
+  function sanitizeSheetName(name) {
+    return name.replace(/[\\/?*\[\]]/g, "").slice(0, 31);
+  }
+
+  // Переименовываем лист, используя текущую дату
+  sheet.name = sanitizeSheetName(
+    `КП от ${new Date().toLocaleDateString("ru-RU")}`,
+  );
 
   const buffer = await workbook.xlsx.writeBuffer();
   saveAs(new Blob([buffer]), `КП.xlsx`);

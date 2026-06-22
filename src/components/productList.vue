@@ -54,7 +54,7 @@
       <div
         v-if="isDesktop"
         key="header"
-        class="relative z-1 grid grid-cols-[24%_10%_6%_8%_8%_14%_13%_13%_4%] pt-4 pb-2 px-4 md:text-sm xl:font-semibold font-medium before:content-[''] before:absolute before:inset-x-0 before:-top-2 before:-bottom-3 before:bg-violet-50 before:rounded-t-2xl before:-z-1"
+        class="relative z-1 grid grid-cols-[24%_10%_6%_8%_8%_14%_13%_13%_4%] pt-4 pb-2 px-4 md:text-sm xl:font-semibold font-medium before:content-[''] before:absolute before:inset-x-0 before:-top-2 before:-bottom-3 before:bg-blue-50 before:rounded-t-2xl before:-z-1"
       >
         <div class="pr-1">Наименование</div>
         <div class="pr-1">СС Без НДС</div>
@@ -167,10 +167,10 @@
             Поиск
           </h3>
           <productSearch @add-product="addProduct" :added-products="products" />
-          <div>
+          <div class="flex gap-2 justify-between mt-3 mb-1">
             <button
               @click="isKPModalOpen = true"
-              class="self-end cursor-pointer bg-blue-500 text-white md:px-4 py-2.5 px-3 rounded-lg hover:bg-blue-600 transition-colors"
+              class="self-end cursor-pointer text-blue-500 outline -outline-offset-1 outline-blue-500 md:px-4 py-2.5 px-3 rounded-lg hover:bg-blue-500 hover:text-white transition-colors"
             >
               Создать КП
             </button>

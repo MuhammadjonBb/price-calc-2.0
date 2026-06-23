@@ -50,13 +50,13 @@ onMounted(async () => {
 
     if (res.status === 401) {
       // Если неавторизован, перенаправляем на страницу входа
-      router.push("/price-calc/login");
+      router.push("/login");
     }
     data.value = await res.json();
   } catch (error) {
     console.error("Error fetching products:", error);
     if (error.response && error.response.status === 401) {
-      router.push("/price-calc/login");
+      router.push("/login");
     }
   }
 });

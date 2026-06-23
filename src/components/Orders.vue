@@ -146,7 +146,7 @@ const getOrders = async () => {
     if (!response.ok) {
       if (response.status === 401) {
         // Если неавторизован, перенаправляем на страницу входа
-        router.push("/price-calc/login");
+        router.push("/login");
       }
       throw new Error("Failed to fetch orders");
     }
@@ -174,7 +174,7 @@ const deleteOrder = async (orderId) => {
     if (!response.ok) {
       if (response.status === 401) {
         // Если неавторизован, перенаправляем на страницу входа
-        router.push("/price-calc/login");
+        router.push("/login");
       }
       throw new Error("Failed to delete order");
     }
@@ -227,7 +227,7 @@ const openOrder = (orderId) => {
       orders.value.find((order) => order.id === orderId).roadExpense,
     ),
   );
-  router.push(`/price-calc/`);
+  router.push(`/`);
 };
 
 const isDesktop = computed(() => {

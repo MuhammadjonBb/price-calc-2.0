@@ -135,7 +135,7 @@ const ordersLoader = ref(false);
 const getOrders = async () => {
   ordersLoader.value = true;
   try {
-    const response = await fetch("http://192.168.100.33:3000/orders", {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/orders`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -161,7 +161,7 @@ const getOrders = async () => {
 const deleteOrder = async (orderId) => {
   try {
     const response = await fetch(
-      `http://192.168.100.33:3000/orders/${orderId}`,
+      `${import.meta.env.VITE_API_URL}/orders/${orderId}`,
       {
         method: "DELETE",
         headers: {

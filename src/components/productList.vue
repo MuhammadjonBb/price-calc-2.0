@@ -431,7 +431,7 @@ const handleSave = (data) => {
     };
 
     toast.promise(
-      fetch("http://192.168.100.33:3000/orders", {
+      fetch(`${import.meta.env.VITE_API_URL}/orders`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

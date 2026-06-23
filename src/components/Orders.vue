@@ -21,6 +21,7 @@
         <div class="font-bold">Итоговая сумма</div>
         <div class="font-bold">Комментарий</div>
         <div class="font-bold">Статус</div>
+        <div class="font-bold text-end">Действия</div>
       </div>
       <ul class="flex flex-col gap-2" v-if="isDesktop">
         <li
@@ -35,15 +36,20 @@
           <div>{{ order.agent }}</div>
           <div>{{ formatPrice(totalSum(order)) }} сум</div>
           <div>{{ order.comment }}</div>
-          <div>{{ getStatusText(order.status_code) }}</div>
-          <div class="flex justify-between items-center gap-2">
+          <div :class="getStatusClass(order.status_code)">
+            {{ getStatusText(order.status_code) }}
+          </div>
+          <div class="flex ml-auto gap-2">
             <button
               @click="openOrder(order.id)"
               class="bg-primary text-white px-4 py-1.5 md:px-3 md:py-2 rounded-md cursor-pointer hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <span v-if="isDesktopLarge">Открыть</span>
               <span v-else
-                ><img src="../assets/img/delete.svg" alt="Открыть" class="w-5"
+                ><img
+                  src="../assets/img/exit.svg"
+                  alt="Открыть"
+                  class="w-5 scale-x-[-1]"
               /></span>
             </button>
             <button
@@ -194,6 +200,19 @@ const getStatusText = (statusCode) => {
       return "Завершен";
     default:
       return "Неизвестный статус";
+  }
+};
+
+const getStatusClass = (statusCode) => {
+  switch (statusCode) {
+    case 0:
+      return "text-blue-500";
+    case 1:
+      return "text-yellow-500";
+    case 2:
+      return "text-green-500";
+    default:
+      return "text-gray-500";
   }
 };
 

@@ -72,6 +72,7 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { toast } from "vue-sonner";
 
 const password = ref("");
 const login = ref("");
@@ -82,6 +83,7 @@ const router = useRouter();
 // Функция для обработки входа
 const handleLogin = async (e) => {
   e.preventDefault();
+  toast.loading("Выполняется вход...");
   const res = await fetch(`${import.meta.env.VITE_API_URL}/login`, {
     method: "POST",
     headers: {
@@ -97,12 +99,13 @@ const handleLogin = async (e) => {
   const data = await res.json();
 
   if (!res.ok) {
-    error.value = data.message || "Ошибка при входе";
+    toast.error(data.message || "Ошибка при входе");
     return;
   }
 
   localStorage.setItem("token", data.token);
   localStorage.setItem("userData", JSON.stringify(data.user));
+  toast.success("Вход выполнен успешно");
   router.push("/price-calc/");
 };
 </script>

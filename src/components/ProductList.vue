@@ -8,7 +8,7 @@
       <div class="flex justify-between flex-col sm:flex-row gap-2 mb-4 lg:mb-6">
         <div class="flex items-center justify-between gap-2">
           <router-link
-            to="/price-calc/orders/"
+            to="/orders/"
             class="group flex items-center p-1.5 px-4 text-blue-500 lg:self-center self-start outline rounded-lg hover:bg-blue-600 hover:text-white transition-colors"
           >
             <h2 class="flex items-center font-lg font-bold font-gray-800 gap-2">

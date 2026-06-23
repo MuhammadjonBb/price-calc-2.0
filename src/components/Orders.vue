@@ -7,7 +7,7 @@
         <h1 class="text-2xl font-bold">Сохраненные заказы</h1>
         <router-link
           class="flex self-center underline text-blue-500 hover:text-blue-700"
-          to="/price-calc/"
+          to="/"
           >Назад</router-link
         >
       </div>

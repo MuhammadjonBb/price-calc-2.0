@@ -5,9 +5,9 @@ export async function generateKP(products, props) {
   const workbook = new ExcelJS.Workbook();
 
   await workbook.xlsx.load(
-    await fetch(
-      `/price-calc/templates/kp-template-${products.length}.xlsx`,
-    ).then((res) => res.arrayBuffer()),
+    await fetch(`/templates/kp-template-${products.length}.xlsx`).then((res) =>
+      res.arrayBuffer(),
+    ),
   );
 
   const setTemplate = () => {
@@ -30,8 +30,8 @@ export async function generateKP(products, props) {
   keepOnlySheet(workbook, setTemplate());
 
   const sheet = workbook.getWorksheet(setTemplate());
-  const checkBuffer = await fetch("/price-calc/assets/checkmark.png").then(
-    (r) => r.arrayBuffer(),
+  const checkBuffer = await fetch("/assets/checkmark.png").then((r) =>
+    r.arrayBuffer(),
   );
 
   const BASE_HEIGHT = 15;

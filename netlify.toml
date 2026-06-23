@@ -1,4 +1,4 @@
 [[redirects]]
-  from = "/price-calc/*"
+  from = "/*"
   to = "/index.html"
   status = 200

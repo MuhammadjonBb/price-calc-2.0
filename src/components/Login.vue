@@ -83,29 +83,29 @@ const router = useRouter();
 // Функция для обработки входа
 const handleLogin = async (e) => {
   e.preventDefault();
-  toast.loading("Выполняется вход...");
-  const res = await fetch(`${import.meta.env.VITE_API_URL}/login`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      username: login.value.trim(),
-      password: password.value.trim(),
+
+  await toast.promise(
+    fetch(`${import.meta.env.VITE_API_URL}/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: login.value.trim(),
+        password: password.value.trim(),
+      }),
+    }).then(async (res) => {
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Ошибка при входе");
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("userData", JSON.stringify(data.user));
+      router.push("/");
     }),
-  });
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    toast.error(data.message || "Ошибка при входе");
-    return;
-  }
-
-  localStorage.setItem("token", data.token);
-  localStorage.setItem("userData", JSON.stringify(data.user));
-  toast.success("Вход выполнен успешно");
-  router.push("/price-calc/");
+    {
+      loading: "Выполняется вход...",
+      success: "Вход выполнен успешно",
+      error: (err) => err.message,
+    },
+  );
 };
 </script>

@@ -1,6 +1,7 @@
 <template>
   <div
     class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4"
+    @click.self="$emit('close')"
   >
     <div
       class="w-full max-w-4xl bg-white rounded-3xl shadow-xl overflow-hidden"

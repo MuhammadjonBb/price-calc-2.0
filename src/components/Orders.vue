@@ -25,7 +25,7 @@
       <ul class="flex flex-col gap-2" v-if="isDesktop">
         <li
           v-for="order in orders"
-          :key="order._id"
+          :key="order.id"
           class="grid grid-cols-7 gap-4 lg:text-md text-sm items-center py-3 px-4 text-text-main rounded-lg shadow-md border border-border bg-surface"
         >
           <div class="">
@@ -38,7 +38,7 @@
           <div>{{ getStatusText(order.status_code) }}</div>
           <div class="flex justify-between items-center gap-2">
             <button
-              @click="openOrder(order._id)"
+              @click="openOrder(order.id)"
               class="bg-primary text-white px-4 py-1.5 md:px-3 md:py-2 rounded-md cursor-pointer hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <span v-if="isDesktopLarge">Открыть</span>
@@ -47,10 +47,10 @@
               /></span>
             </button>
             <button
-              @click="deleteOrder(order._id)"
+              @click="deleteOrder(order.id)"
               class="bg-red-500 text-white px-4 py-1.5 md:px-3 md:py-2 rounded-md cursor-pointer hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
             >
-              <span v-if="isDesktopLarge">Удалить</span>
+              <span v-if="isDesktopLarge">Удалить </span>
               <span v-else
                 ><img src="../assets/img/delete.svg" alt="Удалить" class="w-5"
               /></span>
@@ -62,7 +62,7 @@
       <div v-else class="flex flex-col gap-4">
         <div
           v-for="order in orders"
-          :key="order._id"
+          :key="order.id"
           class="flex flex-col gap-2 p-4 border border-border rounded-lg shadow-md bg-surface"
         >
           <div class="flex justify-between items-center">
@@ -77,13 +77,13 @@
           <div><b>Статус:</b> {{ getStatusText(order.status_code) }}</div>
           <div class="flex justify-end items-center gap-2">
             <button
-              @click="openOrder(order._id)"
+              @click="openOrder(order.id)"
               class="bg-primary text-white px-4 py-1.5 md:px-3 md:py-2 rounded-md cursor-pointer hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-primary"
             >
               Открыть
             </button>
             <button
-              @click="deleteOrder(order._id)"
+              @click="deleteOrder(order.id)"
               class="bg-red-500 text-white px-4 py-1.5 md:px-3 md:py-2 rounded-md cursor-pointer hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
             >
               Удалить
@@ -91,7 +91,11 @@
           </div>
         </div>
       </div>
-      <div v-if="!ifOrders" class="text-center text-gray-500 py-10">
+
+      <div v-if="ordersLoader" class="text-center text-gray-500 py-10">
+        Загрузка заказов...
+      </div>
+      <div v-else-if="!ifOrders" class="text-center text-gray-500 py-10">
         Нет сохраненных заказов
       </div>
     </div>
@@ -121,7 +125,9 @@ const ifOrders = computed(() => {
   return orders.value && orders.value.length > 0;
 });
 
+const ordersLoader = ref(false);
 const getOrders = async () => {
+  ordersLoader.value = true;
   try {
     const response = await fetch("http://192.168.100.33:3000/orders", {
       method: "GET",
@@ -139,8 +145,9 @@ const getOrders = async () => {
       throw new Error("Failed to fetch orders");
     }
     orders.value = await response.json();
-    console.log("Fetched orders:", orders.value);
+    ordersLoader.value = false;
   } catch (error) {
+    ordersLoader.value = false;
     console.error("Error fetching orders:", error);
   }
 };
@@ -166,7 +173,7 @@ const deleteOrder = async (orderId) => {
       throw new Error("Failed to delete order");
     }
     const getOrderName = orders.value.find(
-      (order) => order._id === orderId,
+      (order) => order.id === orderId,
     ).name;
     // После удаления заказа, обновляем список заказов
     toast.success(`Заказ \`${getOrderName}\` успешно удален`);
@@ -195,12 +202,10 @@ const openOrder = (orderId) => {
 
   localStorage.setItem(
     "products",
-    JSON.stringify(
-      orders.value.find((order) => order._id === orderId).products,
-    ),
+    JSON.stringify(orders.value.find((order) => order.id === orderId).products),
     localStorage.setItem(
       "roadExpense",
-      orders.value.find((order) => order._id === orderId).roadExpense,
+      orders.value.find((order) => order.id === orderId).roadExpense,
     ),
   );
   router.push(`/price-calc/`);

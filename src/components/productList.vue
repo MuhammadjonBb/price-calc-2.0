@@ -421,7 +421,7 @@ const openModal = () => {
   isSaveModalOpen.value = true;
 };
 
-const handleSave = async (data) => {
+const handleSave = (data) => {
   try {
     // тут ты склеиваешь мету + товары из калькулятора
     const order = {
@@ -430,20 +430,26 @@ const handleSave = async (data) => {
       roadExpense: roadExpense.value, // дорожные расходы
     };
 
-    await fetch("http://192.168.100.33:3000/orders", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+    toast.promise(
+      fetch("http://192.168.100.33:3000/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(order),
+      }),
+      {
+        loading: "Сохраняем заказ...",
+        success: "Заказ успешно сохранен!",
+        error: "Ошибка при сохранении заказа",
       },
-      body: JSON.stringify(order),
-    });
+    );
 
-    toast.success("Заказ сохранен");
+    // toast.success("Заказ сохранен");
     isSaveModalOpen.value = false;
   } catch (e) {
-    toast.error("Ошибка при сохранении заказа");
-    console.error(e);
+    saveLoader.value = false;
   }
 };
 

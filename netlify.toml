@@ -1,0 +1,6 @@
+[[
+    redirects
+]]
+  from = "/price-calc/*"
+  to = "/index.html"
+  status = 200

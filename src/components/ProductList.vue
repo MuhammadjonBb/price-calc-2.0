@@ -3,25 +3,49 @@
     class="xl:p-6 md:p-3 p-1 text-text-main bg-surface min-h-screen bg-cover bg-center"
   >
     <div
-      class="lg:p-6 md:p-4 pt-5 p-3 mb-10 max-w-full mx-auto bg-surface border border-border shadow-2xl rounded-2xl"
+      class="lg:p-6 md:p-4 pt-5 p-3 max-w-full mx-auto bg-surface border border-border shadow-2xl rounded-2xl"
+      :style="height ? { height, transition: 'height 0.3s ease' } : {}"
     >
-      <div class="flex justify-between flex-col sm:flex-row gap-2 mb-4 lg:mb-6">
-        <div class="flex items-center justify-between gap-2">
-          <router-link
-            to="/orders/"
-            class="group flex items-center p-1.5 px-4 text-blue-500 lg:self-center self-start outline rounded-lg hover:bg-blue-600 hover:text-white transition-colors"
-          >
-            <h2 class="flex items-center font-lg font-bold font-gray-800 gap-2">
+      <div ref="listRef" class="mb-15">
+        <div
+          class="flex justify-between flex-col sm:flex-row gap-2 mb-4 lg:mb-6"
+        >
+          <div class="flex items-center justify-between gap-2">
+            <router-link
+              to="/orders/"
+              class="group flex items-center p-1.5 px-4 text-blue-500 lg:self-center self-start outline rounded-lg hover:bg-blue-600 hover:text-white transition-colors"
+            >
+              <h2
+                class="flex items-center font-lg font-bold font-gray-800 gap-2"
+              >
+                <img
+                  src="../assets/img/save.svg"
+                  alt="Заказы"
+                  class="inline w-3 group-hover:brightness-0 group-hover:invert"
+                />
+                Заказы
+              </h2></router-link
+            >
+            <button
+              v-show="!isTablet"
+              @click="logout"
+              class="bg-red-500 flex self-end items-center text-white px-4 py-1.5 lg:py-2 rounded-lg hover:bg-red-600 transition cursor-pointer"
+            >
               <img
-                src="../assets/img/save.svg"
-                alt="Заказы"
-                class="inline w-3 group-hover:brightness-0 group-hover:invert"
+                src="../assets/img/exit.svg"
+                alt="Выйти"
+                class="lg:w-5 w-4 mr-1"
               />
-              Заказы
-            </h2></router-link
-          >
+              Выйти
+            </button>
+          </div>
+
+          <h2 class="md:text-2xl text-xl font-bold">
+            <div v-if="isDesktop">Расчет маржи и дорожных расходов</div>
+            <div v-else>Расчет маржи</div>
+          </h2>
           <button
-            v-show="!isTablet"
+            v-show="isTablet"
             @click="logout"
             class="bg-red-500 flex self-end items-center text-white px-4 py-1.5 lg:py-2 rounded-lg hover:bg-red-600 transition cursor-pointer"
           >
@@ -33,90 +57,135 @@
             Выйти
           </button>
         </div>
-
-        <h2 class="md:text-2xl text-xl font-bold">
-          <div v-if="isDesktop">Расчет маржи и дорожных расходов</div>
-          <div v-else>Расчет маржи</div>
-        </h2>
-        <button
-          v-show="isTablet"
-          @click="logout"
-          class="bg-red-500 flex self-end items-center text-white px-4 py-1.5 lg:py-2 rounded-lg hover:bg-red-600 transition cursor-pointer"
+        <div
+          v-if="isDesktop"
+          key="header"
+          class="relative z-1 grid grid-cols-[24%_10%_6%_8%_8%_14%_13%_13%_4%] pt-4 pb-2 px-4 md:text-sm xl:font-semibold font-medium before:content-[''] before:absolute before:inset-x-0 before:-top-2 before:-bottom-3 before:bg-blue-50 before:rounded-t-2xl before:-z-1"
         >
-          <img
-            src="../assets/img/exit.svg"
-            alt="Выйти"
-            class="lg:w-5 w-4 mr-1"
-          />
-          Выйти
-        </button>
-      </div>
-      <div
-        v-if="isDesktop"
-        key="header"
-        class="relative z-1 grid grid-cols-[24%_10%_6%_8%_8%_14%_13%_13%_4%] pt-4 pb-2 px-4 md:text-sm xl:font-semibold font-medium before:content-[''] before:absolute before:inset-x-0 before:-top-2 before:-bottom-3 before:bg-blue-50 before:rounded-t-2xl before:-z-1"
-      >
-        <div class="pr-1">Наименование</div>
-        <div class="pr-1">СС Без НДС</div>
-        <div class="pr-1">Ед. изм.</div>
-        <div class="pr-1" v-if="isDesktopLarge">Количество</div>
-        <div class="pr-1" v-else>Кол-во</div>
-        <div class="pr-1">Маржа (%)</div>
-        <div class="pr-1 max-w-9/10">Цена без доставки (Маржа + НДС)</div>
-        <div class="pr-1 max-w-9/10">Цена с учетом доставки</div>
-        <div class="pr-1">Сумма</div>
-      </div>
-      <div class="grid gap-4 mb-4" v-if="isDesktop">
-        <transition-group name="fade" tag="div" class="grid gap-3 relative">
-          <!-- <div
+          <div class="pr-1">Наименование</div>
+          <div class="pr-1">СС Без НДС</div>
+          <div class="pr-1">Ед. изм.</div>
+          <div class="pr-1" v-if="isDesktopLarge">Количество</div>
+          <div class="pr-1" v-else>Кол-во</div>
+          <div class="pr-1">Маржа (%)</div>
+          <div class="pr-1 max-w-9/10">Цена без доставки (Маржа + НДС)</div>
+          <div class="pr-1 max-w-9/10">Цена с учетом доставки</div>
+          <div class="pr-1">Сумма</div>
+        </div>
+        <div class="grid gap-4 mb-4" v-if="isDesktop">
+          <transition-group
+            name="fade"
+            tag="div"
+            appear
+            class="grid gap-3 relative"
+          >
+            <!-- <div
           v-if="!products.length"
           class="text-gray-900 text-center p-4 mt-2 border-dashed border-2 border-gray-600  rounded-lg"
         >
           Добавьте товары для расчета
         </div> -->
-          <productRow
-            v-for="(product, index) in products"
-            :key="product.id || index"
-            :product="product"
-            @update:finalPrice="setFinalPrice"
-            @update:removeProduct="removeProduct"
-          />
+            <productRow
+              v-for="(product, index) in products"
+              :key="product.id || index"
+              :product="product"
+              @update:finalPrice="setFinalPrice"
+              @update:removeProduct="removeProduct"
+            />
 
-          <div
-            class="grid grid-cols-2 gap-4"
-            :class="products.length === 0 ? 'mt-5' : 'mt-0'"
-            key="actions"
-          >
-            <div key="search" class="flex flex-col gap-2">
-              <h3 class="font-semibold text-lg">
-                <img
-                  src="../assets/img/search.svg"
-                  alt="Поиск"
-                  class="inline w-8 mr-0.5"
+            <div
+              class="grid grid-cols-2 gap-4"
+              :class="products.length === 0 ? 'mt-5' : 'mt-0'"
+              key="actions"
+            >
+              <div key="search" class="flex flex-col gap-2">
+                <h3 class="font-semibold text-lg">
+                  <img
+                    src="../assets/img/search.svg"
+                    alt="Поиск"
+                    class="inline w-8 mr-0.5"
+                  />
+                  Поиск
+                </h3>
+                <productSearch
+                  @add-product="addProduct"
+                  :added-products="products"
                 />
-                Поиск
-              </h3>
-              <productSearch
-                @add-product="addProduct"
-                :added-products="products"
-              />
-            </div>
-            <div class="flex gap-2 justify-end">
-              <button
-                class="flex items-center self-end cursor-pointer outline -outline-offset-1 text-red-600 md:px-4 py-2.5 px-3 rounded-lg hover:bg-red-600 hover:text-white transition-colors"
-                @click="
-                  products = [];
-                  roadExpense = '';
-                  setFinalPrice();
-                "
-              >
-                <!-- <img
+              </div>
+              <div class="flex gap-2 justify-end">
+                <button
+                  class="flex items-center self-end cursor-pointer outline -outline-offset-1 text-red-600 md:px-4 py-2.5 px-3 rounded-lg hover:bg-red-600 hover:text-white transition-colors"
+                  @click="
+                    products = [];
+                    roadExpense = '';
+                    setFinalPrice();
+                  "
+                >
+                  <!-- <img
                   src="../assets/img/clear.svg"
                   alt="Очистить"
                   class="w-5 md:w-7 inline mr-0.5"
                 /> -->
-                Очистить все
-              </button>
+                  Очистить все
+                </button>
+                <button
+                  @click="isKPModalOpen = true"
+                  class="self-end cursor-pointer text-blue-500 outline -outline-offset-1 outline-blue-500 md:px-4 py-2.5 px-3 rounded-lg hover:bg-blue-500 hover:text-white transition-colors"
+                >
+                  Создать КП
+                </button>
+                <button
+                  @click="openModal"
+                  class="self-end cursor-pointer bg-blue-500 text-white md:px-4 py-2.5 px-3 rounded-lg hover:bg-blue-600 transition-colors"
+                >
+                  Сохранить заказ
+                </button>
+                <kpModal
+                  v-if="isKPModalOpen"
+                  @close="isKPModalOpen = false"
+                  @generate-kp="onGenerateKP"
+                />
+                <OrderModal
+                  v-if="isSaveModalOpen"
+                  @close="isSaveModalOpen = false"
+                  @save="handleSave"
+                  @generate-kp="onGenerateKP"
+                />
+              </div>
+            </div>
+          </transition-group>
+        </div>
+        <!-- MOBILE -->
+        <div v-else class="text-sm md:text-md">
+          <!-- <div
+          class="text-gray-900 text-center p-4 mt-2 border-d ashed border-2 border-gray-600 rounded-lg"
+        >
+          Калькулятор оптимизирован для десктопной версии. Пожалуйста,
+          используйте его на компьютере для лучшего опыта.
+        </div> -->
+          <transition-group name="fade" tag="div" class="grid gap-1 relative">
+            <productRow
+              v-for="(product, index) in products"
+              :key="product.id || index"
+              :product="product"
+              @update:finalPrice="setFinalPrice"
+              @update:removeProduct="removeProduct"
+            />
+          </transition-group>
+          <div class="flex flex-col gap-2 mt-2 md:text-sm">
+            <h3 class="font-semibold text-sm">
+              <img
+                src="../assets/img/search.svg"
+                alt="Поиск"
+                class="inline w-8 mr-0.5"
+              />
+              Поиск
+            </h3>
+            <productSearch
+              @add-product="addProduct"
+              :added-products="products"
+            />
+            <div class="flex gap-2 justify-between mt-3 mb-1">
               <button
                 @click="isKPModalOpen = true"
                 class="self-end cursor-pointer text-blue-500 outline -outline-offset-1 outline-blue-500 md:px-4 py-2.5 px-3 rounded-lg hover:bg-blue-500 hover:text-white transition-colors"
@@ -125,139 +194,85 @@
               </button>
               <button
                 @click="openModal"
-                class="self-end cursor-pointer bg-blue-500 text-white md:px-4 py-2.5 px-3 rounded-lg hover:bg-blue-600 transition-colors"
+                class="bg-blue-600 text-white px-4 py-2 rounded-xl"
               >
                 Сохранить заказ
               </button>
-              <kpModal
-                v-if="isKPModalOpen"
-                @close="isKPModalOpen = false"
-                @generate-kp="onGenerateKP"
-              />
+
               <OrderModal
                 v-if="isSaveModalOpen"
                 @close="isSaveModalOpen = false"
                 @save="handleSave"
-                @generate-kp="onGenerateKP"
               />
             </div>
+            <kpModal
+              v-if="isKPModalOpen"
+              @close="isKPModalOpen = false"
+              @generate-kp="onGenerateKP"
+            />
           </div>
-        </transition-group>
+        </div>
       </div>
-      <!-- MOBILE -->
-      <div v-else class="text-sm md:text-md">
-        <!-- <div
-          class="text-gray-900 text-center p-4 mt-2 border-d ashed border-2 border-gray-600 rounded-lg"
+      <div
+        class="grid grid-cols-1 2xl:grid-cols-2 gap-4 md:mt-6 mt-3 max-w-full mx-auto text-xs md:text-sm xl:text-xl"
+      >
+        <div
+          class="flex flex-col gap-2 shadow-xl rounded-2xl md:p-6 p-3 border border-border bg-surface"
         >
-          Калькулятор оптимизирован для десктопной версии. Пожалуйста,
-          используйте его на компьютере для лучшего опыта.
-        </div> -->
-        <transition-group name="fade" tag="div" class="grid gap-1 relative">
-          <productRow
-            v-for="(product, index) in products"
-            :key="product.id || index"
-            :product="product"
-            @update:finalPrice="setFinalPrice"
-            @update:removeProduct="removeProduct"
-          />
-        </transition-group>
-        <div class="flex flex-col gap-2 mt-2 md:text-sm">
-          <h3 class="font-semibold text-sm">
+          <h3 class="font-semibold lg:text-lg text-sm">
             <img
-              src="../assets/img/search.svg"
-              alt="Поиск"
+              src="../assets/img/truck.svg"
+              alt="Доставка"
               class="inline w-8 mr-0.5"
             />
-            Поиск
+            Дорожный расход:
           </h3>
-          <productSearch @add-product="addProduct" :added-products="products" />
-          <div class="flex gap-2 justify-between mt-3 mb-1">
-            <button
-              @click="isKPModalOpen = true"
-              class="self-end cursor-pointer text-blue-500 outline -outline-offset-1 outline-blue-500 md:px-4 py-2.5 px-3 rounded-lg hover:bg-blue-500 hover:text-white transition-colors"
-            >
-              Создать КП
-            </button>
-            <button
-              @click="openModal"
-              class="bg-blue-600 text-white px-4 py-2 rounded-xl"
-            >
-              Сохранить заказ
-            </button>
-
-            <OrderModal
-              v-if="isSaveModalOpen"
-              @close="isSaveModalOpen = false"
-              @save="handleSave"
+          <div class="flex flex-col 2xl:flex-row justify-between gap-2">
+            <input
+              placeholder="Дорожный расход"
+              name="roadExpense"
+              type="text"
+              class="w-full px-4 py-2 bg-primary-light border border-border rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none"
+              @input="setFinalPrice"
+              v-model="formattedValue"
             />
           </div>
-          <kpModal
-            v-if="isKPModalOpen"
-            @close="isKPModalOpen = false"
-            @generate-kp="onGenerateKP"
-          />
         </div>
-      </div>
-    </div>
-    <div
-      class="grid grid-cols-1 2xl:grid-cols-2 gap-4 md:mt-6 mt-3 max-w-full mx-auto text-xs md:text-sm xl:text-xl"
-    >
-      <div
-        class="flex flex-col gap-2 shadow-xl rounded-2xl md:p-6 p-3 border border-border bg-surface"
-      >
-        <h3 class="font-semibold lg:text-lg text-sm">
-          <img
-            src="../assets/img/truck.svg"
-            alt="Доставка"
-            class="inline w-8 mr-0.5"
-          />
-          Дорожный расход:
-        </h3>
-        <div class="flex flex-col 2xl:flex-row justify-between gap-2">
-          <input
-            placeholder="Дорожный расход"
-            name="roadExpense"
-            type="text"
-            class="w-full px-4 py-2 bg-primary-light border border-border rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none"
-            @input="setFinalPrice"
-            v-model="formattedValue"
-          />
-        </div>
-      </div>
-      <div
-        class="flex flex-col gap-2 shadow-xl rounded-2xl md:p-6 p-3 border border-border bg-surface"
-      >
-        <h3 class="font-semibold lg:text-lg">Итого:</h3>
-        <div>
-          Количество наименований:
-          <strong>{{ products.length }}</strong>
-        </div>
-        <div>
-          Общая стоимость
-          <span v-show="parseFloat(roadExpense) > 0">с доставкой</span>:
-          <strong>{{ formatPrice(totalCost) }}</strong> сум
-        </div>
-        <div v-if="parseFloat(roadExpense) > 0">
-          Общая стоимость без доставки:
-          <strong>{{ formatPrice(totalCost - roadExpense) }} </strong> сум
-        </div>
-        <div>
-          Средняя маржа:
-          <strong>{{ formatPrice(avgMargin) }} %</strong>
-        </div>
-        <div>
-          Прибыль:
-          <strong class="text-green-500">
-            {{ formatPrice(totalProfit) }}
-          </strong>
-          сум
-        </div>
-        <div>
-          Дорожный расход:
-          <strong class="text-orange-500">{{
-            formatPrice(roadExpense)
-          }}</strong>
-          сум
+        <div
+          class="flex flex-col gap-2 shadow-xl rounded-2xl md:p-6 p-3 border border-border bg-surface"
+        >
+          <h3 class="font-semibold lg:text-lg">Итого:</h3>
+          <div>
+            Количество наименований:
+            <strong>{{ products.length }}</strong>
+          </div>
+          <div>
+            Общая стоимость
+            <span v-show="parseFloat(roadExpense) > 0">с доставкой</span>:
+            <strong>{{ formatPrice(totalCost) }}</strong> сум
+          </div>
+          <div v-if="parseFloat(roadExpense) > 0">
+            Общая стоимость без доставки:
+            <strong>{{ formatPrice(totalCost - roadExpense) }} </strong> сум
+          </div>
+          <div>
+            Средняя маржа:
+            <strong>{{ formatPrice(avgMargin) }} %</strong>
+          </div>
+          <div>
+            Прибыль:
+            <strong class="text-green-500">
+              {{ formatPrice(totalProfit) }}
+            </strong>
+            сум
+          </div>
+          <div>
+            Дорожный расход:
+            <strong class="text-orange-500">{{
+              formatPrice(roadExpense)
+            }}</strong>
+            сум
+          </div>
         </div>
       </div>
     </div>
@@ -274,7 +289,7 @@ import { formatPrice } from "../utils/format.js";
 import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 import { generateKP } from "../utils/generateKP.js";
-import sakuraBg from "../assets/img/sakura-bg.png";
+import { useAnimatedHeight } from "../utils/useAnimatedHeight.js";
 
 const router = useRouter();
 const products = ref([
@@ -457,4 +472,34 @@ const onGenerateKP = (props) => {
   generateKP(products.value, props);
   toast.success("КП успешно сгенерировано");
 };
+
+const listRef = ref(null);
+const { height } = useAnimatedHeight(listRef);
 </script>
+
+<style scoped>
+/* Fade анимация для transition-group */
+.fade-move,
+.fade-enter-active,
+.fade-leave-active {
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+.fade-enter-from {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+/* Критично: убирает рывки при удалении элементов */
+.fade-leave-active {
+  position: absolute;
+  width: 100%;
+}
+</style>

@@ -19,7 +19,7 @@ body {
   color: var(--color-text-main);
 }
 
-.fade-enter-active {
+/* .fade-enter-active {
   transition: all 0.25s ease;
 }
 
@@ -36,4 +36,4 @@ body {
 
 .fade-move {
   transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-}
+} */

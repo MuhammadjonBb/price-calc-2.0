@@ -257,11 +257,16 @@
           </div>
           <div>
             Средняя маржа:
-            <strong>{{ formatPrice(avgMargin) }} %</strong>
+            <strong :class="avgMargin < 0 ? 'text-red-500' : 'text-gray-800'"
+              >{{ formatPrice(avgMargin) }}
+            </strong>
+            %
           </div>
           <div>
             Прибыль:
-            <strong class="text-green-500">
+            <strong
+              :class="totalProfit < 0 ? 'text-red-500' : 'text-green-500'"
+            >
               {{ formatPrice(totalProfit) }}
             </strong>
             сум

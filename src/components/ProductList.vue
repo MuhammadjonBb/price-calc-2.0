@@ -115,11 +115,7 @@
               <div class="flex gap-2 justify-end">
                 <button
                   class="flex items-center self-end cursor-pointer outline -outline-offset-1 text-red-600 md:px-4 py-2.5 px-3 rounded-lg hover:bg-red-600 hover:text-white transition-colors"
-                  @click="
-                    products = [];
-                    roadExpense = '';
-                    setFinalPrice();
-                  "
+                  @click="showClearModal = true"
                 >
                   <!-- <img
                   src="../assets/img/clear.svg"
@@ -140,6 +136,16 @@
                 >
                   Сохранить заказ
                 </button>
+                <clearModal
+                  v-model="showClearModal"
+                  @confirm="
+                    () => {
+                      products = [];
+                      roadExpense = '';
+                      setFinalPrice();
+                    }
+                  "
+                />
                 <kpModal
                   v-if="isKPModalOpen"
                   @close="isKPModalOpen = false"
@@ -290,6 +296,7 @@ import productRow from "./productRow.vue";
 import productSearch from "./productSearch.vue";
 import OrderModal from "./orderModal.vue";
 import kpModal from "./kpModal.vue";
+import clearModal from "./clearModal.vue";
 import { formatPrice } from "../utils/format.js";
 import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
@@ -309,6 +316,7 @@ const products = ref([
   // },
 ]);
 const roadExpense = ref("");
+const showClearModal = ref(false);
 
 // Загружаем данные из Local Storage при загрузке страницы
 onMounted(() => {

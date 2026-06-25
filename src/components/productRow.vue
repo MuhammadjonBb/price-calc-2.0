@@ -15,7 +15,7 @@
       <input
         name="amount"
         type="number"
-        v-model.number="product.amount"
+        v-model.number="amountRef"
         @input="setAmount"
         class="w-full px-4 xl:max-w-3/4 max-w-9/10 py-2 bg-primary-light border border-border rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none"
         :class="
@@ -88,7 +88,7 @@
       <input
         name="amount"
         type="number"
-        v-model.number="product.amount"
+        v-model.number="amountRef"
         @input="setAmount"
         class="w-full px-4 max-w-3/4 py-2 bg-primary-light border border-border rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none"
         :class="
@@ -147,7 +147,7 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, ref, onMounted } from "vue";
 import { formatPrice } from "../utils/format.js";
 
 const props = defineProps({
@@ -177,15 +177,20 @@ const setPrice = () => {
   emit("update:finalPrice");
 };
 
-const setAmount = (event) => {
-  const value = event.target.value;
-  props.product.amount = value;
+const amountRef = ref(null);
+
+const setAmount = (e) => {
+  props.product.amount = e.target.value;
   emit("update:finalPrice");
 };
 
 const removeProduct = () => {
   emit("update:removeProduct", props.product);
 };
+
+onMounted(() => {
+  amountRef.value = props.product.amount;
+});
 
 const isNegativeMargin = computed(() => {
   return props.product.margin < 0 || props.product.margin > 100;

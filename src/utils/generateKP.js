@@ -138,7 +138,6 @@ export async function generateKP(products, props) {
   Object.entries(checks[0]).forEach(([name, c]) => {
     if (props.constructions.includes(name)) {
       const cell = sheet.getCell(c);
-      console.log(cell);
       checkBox(cell, name, true);
     }
   });

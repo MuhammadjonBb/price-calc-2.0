@@ -50,6 +50,7 @@ onMounted(async () => {
 
     if (res.status === 401) {
       // Если неавторизован, перенаправляем на страницу входа
+      localStorage.removeItem("token"); // Удаляем токен из localStorage
       router.push("/login");
     }
     data.value = await res.json();

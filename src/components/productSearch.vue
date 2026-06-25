@@ -171,7 +171,6 @@ async function fetchProducts() {
     }
 
     data.value = await res.json();
-    console.log(data.value);
   } catch (error) {
     console.error("Error fetching products:", error);
   }

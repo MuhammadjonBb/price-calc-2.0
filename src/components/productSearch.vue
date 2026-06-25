@@ -1,5 +1,7 @@
 <template>
-  <div class="relative w-full flex gap-2 items-stretch flex-row-reverse">
+  <div
+    class="relative w-full flex gap-2 items-stretch md:flex-row-reverse flex-col"
+  >
     <!-- Дропдаун региона -->
     <div class="relative shrink-0" ref="dropdownRef">
       <button

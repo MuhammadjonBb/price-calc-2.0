@@ -79,12 +79,12 @@
             appear
             class="grid gap-3 relative"
           >
-            <!-- <div
-          v-if="!products.length"
-          class="text-gray-900 text-center p-4 mt-2 border-dashed border-2 border-gray-600  rounded-lg"
-        >
-          Добавьте товары для расчета
-        </div> -->
+            <div
+              v-if="!products.length"
+              class="text-gray-900 text-center p-4 mt-2 border-dashed border border-gray-300 rounded-lg"
+            >
+              Добавьте товары через поиск
+            </div>
             <productRow
               v-for="(product, index) in products"
               :key="product.id || index"

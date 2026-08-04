@@ -1,5 +1,12 @@
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
+import QRCode from "qrcode";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY,
+);
 
 export async function generateKP(products, props) {
   const workbook = new ExcelJS.Workbook();
@@ -174,6 +181,51 @@ export async function generateKP(products, props) {
 
   const phoneCell = sheet.getCell(`B${43 - 1 + products.length}`);
   phoneCell.value = userData ? userData.phone : "";
+
+  // --- 1. Сохраняем КП в Supabase и получаем id ---
+  const { data: kpRow, error } = await supabase
+    .from("kp")
+    .insert({
+      agent: userData?.name || "Менеджер",
+      items: products,
+      total: products.reduce((sum, p) => sum + p.deliveryPrice * p.amount, 0),
+    })
+    .select("id, created_at")
+    .single();
+
+  if (error) {
+    console.error("Ошибка сохранения КП в Supabase:", error);
+    // можно решить: прерывать генерацию или продолжать без QR
+  }
+
+  // --- 2. Генерируем QR как base64 PNG ---
+  if (kpRow?.id) {
+    const qrContent = kpRow.id;
+    // или просто kpRow.id, если не нужна страница просмотра
+
+    const qrDataUrl = await QRCode.toDataURL(qrContent, {
+      width: 200,
+      margin: 1,
+    });
+
+    // ExcelJS хочет base64 без префикса "data:image/png;base64,"
+    const base64 = qrDataUrl.split(",")[1];
+
+    const imageId = workbook.addImage({
+      base64,
+      extension: "png",
+    });
+
+    // --- 3. Вставляем картинку в угол листа ---
+    // ext = размер в пикселях
+    sheet.addImage(imageId, {
+      tl: {
+        col: props.template === "nds" ? 5 : 8,
+        row: 38 + products.length - 1,
+      }, // подбери под свой шаблон, напр. колонка I, строка 1
+      ext: { width: 80, height: 80 },
+    });
+  }
 
   function sanitizeSheetName(name) {
     return name.replace(/[\\/?*\[\]]/g, "").slice(0, 31);

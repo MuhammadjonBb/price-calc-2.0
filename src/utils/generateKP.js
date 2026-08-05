@@ -200,7 +200,7 @@ export async function generateKP(products, props) {
 
   // --- 2. Генерируем QR как base64 PNG ---
   if (kpRow?.id) {
-    const qrContent = kpRow.id;
+    const qrContent = `ID: ${kpRow.id}; Автор: ${userData?.name || "Менеджер"}`;
     // или просто kpRow.id, если не нужна страница просмотра
 
     const qrDataUrl = await QRCode.toDataURL(qrContent, {

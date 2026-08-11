@@ -3,139 +3,141 @@
     class="relative w-full flex gap-2 items-stretch md:flex-row-reverse flex-col"
   >
     <!-- Дропдаун  -->
-    <div class="relative shrink-0" ref="dropdownRef">
-      <button
-        @click="isOpenCat = !isOpenCat"
-        class="flex h-full cursor-pointer items-center gap-2 px-4 py-2 bg-white border border-border rounded-xl text-sm text-gray-700 hover:border-primary transition-all whitespace-nowrap"
-        :class="{ 'border-primary ring-2 ring-primary/20': isOpenCat }"
-      >
-        <span class="w-2 h-2 rounded-full bg-primary shrink-0" />
-        <span>{{ selectedCategory.label }}</span>
-        <svg
-          class="w-3 h-3 text-gray-400 transition-transform"
-          :class="{ 'rotate-180': isOpenCat }"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
+    <div class="flex gap-2">
+      <div class="relative shrink-0" ref="dropdownRef">
+        <button
+          @click="isOpenCat = !isOpenCat"
+          class="flex h-full cursor-pointer items-center gap-2 px-4 py-2 bg-white border border-border rounded-xl text-sm text-gray-700 hover:border-primary transition-all whitespace-nowrap"
+          :class="{ 'border-primary ring-2 ring-primary/20': isOpenCat }"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M19 9l-7 7-7-7"
-          />
-        </svg>
-      </button>
+          <span class="w-2 h-2 rounded-full bg-primary shrink-0" />
+          <span>{{ selectedCategory.label }}</span>
+          <svg
+            class="w-3 h-3 text-gray-400 transition-transform"
+            :class="{ 'rotate-180': isOpenCat }"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </button>
 
-      <Transition name="dropdown">
-        <div
-          v-if="isOpenCat"
-          class="absolute top-[calc(100%+6px)] left-0 z-50 bg-white border border-border rounded-2xl shadow-lg overflow-hidden min-w-50"
-        >
+        <Transition name="dropdown">
           <div
-            class="px-3 py-2 text-[11px] font-semibold tracking-widest text-gray-400 uppercase border-b border-border"
+            v-if="isOpenCat"
+            class="absolute top-[calc(100%+6px)] left-0 z-50 bg-white border border-border rounded-2xl shadow-lg overflow-hidden min-w-50"
           >
-            Категория
-          </div>
-          <div
-            v-for="category in categories"
-            :key="category.value"
-            @click="selectCategory(category)"
-            class="flex items-center gap-3 px-4 py-2.5 cursor-pointer text-sm text-gray-700 hover:bg-blue-50 transition-colors border-b border-border last:border-0"
-            :class="{
-              'bg-blue-50 text-blue-600 font-medium':
-                category.value === selectedCategory.value,
-            }"
-          >
-            <div class="flex flex-col">
-              <span class="text-sm md:text-base">{{ category.label }}</span>
-            </div>
-            <svg
-              v-if="category.value === selectedCategory.value"
-              class="ml-auto w-4 h-4 text-blue-600"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+            <div
+              class="px-3 py-2 text-[11px] font-semibold tracking-widest text-gray-400 uppercase border-b border-border"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
-          </div>
-        </div>
-      </Transition>
-    </div>
-
-    <div class="relative shrink-0" ref="dropdownRef">
-      <button
-        @click="isOpen = !isOpen"
-        class="flex h-full cursor-pointer items-center gap-2 px-4 py-2 bg-white border border-border rounded-xl text-sm text-gray-700 hover:border-primary transition-all whitespace-nowrap"
-        :class="{ 'border-primary ring-2 ring-primary/20': isOpen }"
-      >
-        <span class="w-2 h-2 rounded-full bg-primary shrink-0" />
-        <span>{{ selectedRegion.label }}</span>
-        <svg
-          class="w-3 h-3 text-gray-400 transition-transform"
-          :class="{ 'rotate-180': isOpen }"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M19 9l-7 7-7-7"
-          />
-        </svg>
-      </button>
-
-      <Transition name="dropdown">
-        <div
-          v-if="isOpen"
-          class="absolute top-[calc(100%+6px)] left-0 z-50 bg-white border border-border rounded-2xl shadow-lg overflow-hidden min-w-50"
-        >
-          <div
-            class="px-3 py-2 text-[11px] font-semibold tracking-widest text-gray-400 uppercase border-b border-border"
-          >
-            Регион
-          </div>
-          <div
-            v-for="region in regions"
-            :key="region.value"
-            @click="selectRegion(region)"
-            class="flex items-center gap-3 px-4 py-2.5 cursor-pointer text-sm text-gray-700 hover:bg-blue-50 transition-colors border-b border-border last:border-0"
-            :class="{
-              'bg-blue-50 text-blue-600 font-medium':
-                region.value === selectedRegion.value,
-            }"
-          >
-            <div class="flex flex-col">
-              <span class="text-sm md:text-base">{{ region.label }}</span>
-              <span class="text-[10px] md:text-xs text-gray-400">{{
-                region.value
-              }}</span>
+              Категория
             </div>
-            <svg
-              v-if="region.value === selectedRegion.value"
-              class="ml-auto w-4 h-4 text-blue-600"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+            <div
+              v-for="category in categories"
+              :key="category.value"
+              @click="selectCategory(category)"
+              class="flex items-center gap-3 px-4 py-2.5 cursor-pointer text-sm text-gray-700 hover:bg-blue-50 transition-colors border-b border-border last:border-0"
+              :class="{
+                'bg-blue-50 text-blue-600 font-medium':
+                  category.value === selectedCategory.value,
+              }"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
+              <div class="flex flex-col">
+                <span class="text-sm md:text-base">{{ category.label }}</span>
+              </div>
+              <svg
+                v-if="category.value === selectedCategory.value"
+                class="ml-auto w-4 h-4 text-blue-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
           </div>
-        </div>
-      </Transition>
+        </Transition>
+      </div>
+
+      <div class="relative shrink-0" ref="dropdownRef">
+        <button
+          @click="isOpen = !isOpen"
+          class="flex h-full cursor-pointer items-center gap-2 px-4 py-2 bg-white border border-border rounded-xl text-sm text-gray-700 hover:border-primary transition-all whitespace-nowrap"
+          :class="{ 'border-primary ring-2 ring-primary/20': isOpen }"
+        >
+          <span class="w-2 h-2 rounded-full bg-primary shrink-0" />
+          <span>{{ selectedRegion.label }}</span>
+          <svg
+            class="w-3 h-3 text-gray-400 transition-transform"
+            :class="{ 'rotate-180': isOpen }"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </button>
+
+        <Transition name="dropdown">
+          <div
+            v-if="isOpen"
+            class="absolute top-[calc(100%+6px)] left-0 z-50 bg-white border border-border rounded-2xl shadow-lg overflow-hidden min-w-50"
+          >
+            <div
+              class="px-3 py-2 text-[11px] font-semibold tracking-widest text-gray-400 uppercase border-b border-border"
+            >
+              Регион
+            </div>
+            <div
+              v-for="region in regions"
+              :key="region.value"
+              @click="selectRegion(region)"
+              class="flex items-center gap-3 px-4 py-2.5 cursor-pointer text-sm text-gray-700 hover:bg-blue-50 transition-colors border-b border-border last:border-0"
+              :class="{
+                'bg-blue-50 text-blue-600 font-medium':
+                  region.value === selectedRegion.value,
+              }"
+            >
+              <div class="flex flex-col">
+                <span class="text-sm md:text-base">{{ region.label }}</span>
+                <span class="text-[10px] md:text-xs text-gray-400">{{
+                  region.value
+                }}</span>
+              </div>
+              <svg
+                v-if="region.value === selectedRegion.value"
+                class="ml-auto w-4 h-4 text-blue-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+          </div>
+        </Transition>
+      </div>
     </div>
 
     <!-- Поиск -->

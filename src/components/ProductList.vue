@@ -163,12 +163,12 @@
         </div>
         <!-- MOBILE -->
         <div v-else class="text-sm md:text-md">
-          <!-- <div
-          class="text-gray-900 text-center p-4 mt-2 border-d ashed border-2 border-gray-600 rounded-lg"
-        >
-          Калькулятор оптимизирован для десктопной версии. Пожалуйста,
-          используйте его на компьютере для лучшего опыта.
-        </div> -->
+          <div
+            v-if="!products.length"
+            class="text-gray-900 text-center p-4 mt-2 border-dashed border border-gray-300 rounded-lg"
+          >
+            Добавьте товары через поиск
+          </div>
           <transition-group name="fade" tag="div" class="grid gap-1 relative">
             <productRow
               v-for="(product, index) in products"

@@ -244,19 +244,28 @@ const categories = [
 ];
 
 const isOpen = ref(false);
-const selectedRegion = ref(regions[0]);
+const selectedRegion = ref(
+  regions.find((r) => r.value === localStorage.getItem("selectedRegion")) ||
+    regions[0],
+);
 const isOpenCat = ref(false);
-const selectedCategory = ref(categories[0]);
+const selectedCategory = ref(
+  categories.find(
+    (c) => c.value === localStorage.getItem("selectedCategory"),
+  ) || categories[0],
+);
 const dropdownRef = ref(null);
 
 const selectCategory = (category) => {
   selectedCategory.value = category;
+  localStorage.setItem("selectedCategory", category.value);
   isOpenCat.value = false;
   fetchProducts();
 };
 
 function selectRegion(region) {
   selectedRegion.value = region;
+  localStorage.setItem("selectedRegion", region.value);
   isOpen.value = false;
   fetchProducts();
 }
